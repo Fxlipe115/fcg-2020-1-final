@@ -1,5 +1,5 @@
-#ifndef MATRIXSTACK_H
-#define MATRIXSTACK_H
+#ifndef _MATRIXSTACK_H
+#define _MATRIXSTACK_H
 
 #include <stack>
 

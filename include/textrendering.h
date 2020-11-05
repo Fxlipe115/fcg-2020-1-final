@@ -1,5 +1,5 @@
-#ifndef TEXTRENDERING_H
-#define TEXTRENDERING_H
+#ifndef _TEXTRENDERING_H
+#define _TEXTRENDERING_H
 
 #include <string>
 
