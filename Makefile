@@ -9,7 +9,7 @@ C_OBJECTS := $(C_SOURCES:%.c=%.o)
 OBJECTS := $(CXX_OBJECTS) $(C_OBJECTS)
 DEPENDENCIES := $(OBJECTS:.o=.d)
 
-EXEC := ./bin/Linux/main
+EXEC := ./main
 
 all: $(EXEC)
 
@@ -29,6 +29,6 @@ clean:
 	rm -f $(EXEC)
 
 run: $(EXEC)
-	cd bin/Linux && ./main
+	./$<
 
 -include $(DEPENDENCIES)
