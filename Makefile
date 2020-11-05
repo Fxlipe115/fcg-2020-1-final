@@ -2,6 +2,7 @@ CXX := g++ -std=c++11
 CFLAGS = -g -Wall -Wno-unused-function -I./include/ -MMD
 LDFLAGS := -lrt -lm -ldl -lX11 -lpthread -lXrandr -lXinerama -lXxf86vm -lXcursor
 LDLIBS := ./lib-linux/libglfw3.a
+
 CXX_SOURCES := $(wildcard src/*.cpp)
 C_SOURCES := $(wildcard src/*.c)
 CXX_OBJECTS := $(CXX_SOURCES:%.cpp=%.o)
@@ -14,12 +15,12 @@ EXEC := ./main
 all: $(EXEC)
 
 $(EXEC): $(OBJECTS)
-	$(CXX) -o $@ $^ $(LDLIBS) $(LDFLAGS) $(CFLAGS)
+	$(CXX) -o $@ $^ $(LDLIBS) $(LDFLAGS)
 
-src/%.o: src/%.cpp
+%.o: %.cpp
 	$(CXX) -c -o $@ $^ $(CFLAGS)
 
-src/%.o: src/%.c
+%.o: %.c
 	$(CXX) -c -o $@ $^ $(CFLAGS)
 
 .PHONY: clean run
