@@ -9,8 +9,6 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 
-GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Função definida em main.cpp
-
 void TextRendering_LoadShader(const GLchar* const shader_string, GLuint shader_id);
 
 void TextRendering_Init();
