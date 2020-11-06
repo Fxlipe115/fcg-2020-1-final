@@ -109,7 +109,7 @@ void TextRendering_Init()
     TextRendering_LoadShader(textfragmentshader_source, textfragmentshader_id);
     glCheckError();
 
-    textprogram_id = createGpuProgram(textvertexshader_id, textfragmentshader_id);
+    textprogram_id = GpuProgram::createGpuProgram(textvertexshader_id, textfragmentshader_id);
     glLinkProgram(textprogram_id);
     glCheckError();
 

@@ -9,6 +9,7 @@
 #include "camera.h"
 #include "cameraparameterssingleton.h"
 #include "gamewindow.h"
+#include "gpuprogram.h"
 #include "matrices.h"
 #include "matrixstack.h"
 #include "objectmodel.h"
@@ -99,8 +100,8 @@ int main(int argc, char* argv[])
     // Carregamos os shaders de vértices e de fragmentos que serão utilizados
     // para renderização. Veja slides 176-196 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
     //
-    Shaders shaders("./src/shaders/shader_fragment.glsl", "./src/shaders/shader_vertex.glsl");
-
+    Shaders* shaders = new Shaders("./src/shaders/shader_fragment.glsl", "./src/shaders/shader_vertex.glsl");
+    GpuProgram* gpuProgram = new GpuProgram(shaders);
     VirtualScene virtualScene;
     Camera* camera = new Camera(CameraParametersSingleton::getInstance());
 
@@ -159,11 +160,11 @@ int main(int argc, char* argv[])
 
         // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
         // os shaders de vértice e fragmentos).
-        glUseProgram(shaders.program_id);
+        glUseProgram(gpuProgram->getProgramId());
 
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
         // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-        glm::mat4 view = Matrix_Camera_View(camera->getPosition(), camera->getViewVector(), camera->getUpVector());
+        glm::mat4 view = camera->getViewMatrix();
 
         // Agora computamos a matriz de Projeção.
         glm::mat4 projection;
@@ -199,8 +200,8 @@ int main(int argc, char* argv[])
         // Enviamos as matrizes "view" e "projection" para a placa de vídeo
         // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
         // efetivamente aplicadas em todos os pontos.
-        glUniformMatrix4fv(shaders.view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-        glUniformMatrix4fv(shaders.projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+        glUniformMatrix4fv(gpuProgram->getViewUniform()       , 1 , GL_FALSE , glm::value_ptr(view));
+        glUniformMatrix4fv(gpuProgram->getProjectionUniform() , 1 , GL_FALSE , glm::value_ptr(projection));
 
         #define SPHERE 0
         #define BUNNY  1
@@ -208,8 +209,8 @@ int main(int argc, char* argv[])
 
         // Desenhamos o modelo da esfera
         model = Matrix_Translate(-1.0f,0.0f,0.0f);
-        glUniformMatrix4fv(shaders.model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(shaders.object_id_uniform, SPHERE);
+        glUniformMatrix4fv(gpuProgram->getModelUniform(), 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(gpuProgram->getObjectIdUniform(), SPHERE);
         virtualScene.drawObject("sphere");
 
         // Desenhamos o modelo do coelho
@@ -217,14 +218,14 @@ int main(int argc, char* argv[])
               * Matrix_Rotate_Z(g_AngleZ) 
               * Matrix_Rotate_Y(g_AngleY) 
               * Matrix_Rotate_X(g_AngleX);
-        glUniformMatrix4fv(shaders.model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(shaders.object_id_uniform, BUNNY);
+        glUniformMatrix4fv(gpuProgram->getModelUniform(), 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(gpuProgram->getObjectIdUniform(), BUNNY);
         virtualScene.drawObject("bunny");
 
         model = Matrix_Translate(0.0f,-1.0f,0.0f)
               * Matrix_Scale(2.0f,1.0f,2.0f);
-        glUniformMatrix4fv(shaders.model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(shaders.object_id_uniform, PLANE);
+        glUniformMatrix4fv(gpuProgram->getModelUniform(), 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(gpuProgram->getObjectIdUniform(), PLANE);
         virtualScene.drawObject("plane");
         
 

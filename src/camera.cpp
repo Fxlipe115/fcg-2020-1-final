@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <cmath>
 
+#include "matrices.h"
 
 Camera::Camera(CameraParameters* parameters) 
  : parameters(parameters)
@@ -36,4 +37,8 @@ glm::vec4 Camera::getViewVector() {
 
 glm::vec4 Camera::getUpVector() {
     return glm::vec4(0.0f,1.0f,0.0f,0.0f);
+}
+
+glm::mat4 Camera::getViewMatrix() {
+    return Matrix_Camera_View(this->getPosition(), this->getViewVector(), this->getUpVector());
 }

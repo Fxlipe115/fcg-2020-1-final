@@ -3,6 +3,8 @@
 
 #include <glm/vec4.hpp>
 
+#include "glm/mat4x4.hpp"
+
 #include "cameraparameters.h"
 
 class Camera {
@@ -15,6 +17,7 @@ public:
     glm::vec4 getPosition();
     glm::vec4 getViewVector();
     glm::vec4 getUpVector();
+    glm::mat4 getViewMatrix();
 };
 
 #endif
