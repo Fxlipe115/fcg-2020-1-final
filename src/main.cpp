@@ -1,17 +1,3 @@
-#include <cmath>
-#include <cstdio>
-#include <cstdlib>
-
-#include <map>
-#include <stack>
-#include <string>
-#include <vector>
-#include <limits>
-#include <fstream>
-#include <sstream>
-#include <stdexcept>
-#include <algorithm>
-
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
 #include <GLFW/glfw3.h>  // Criação de janelas do sistema operacional
 
@@ -19,18 +5,17 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <tiny_obj_loader.h>
-
+#include "callbacks.h"
+#include "camera.h"
+#include "cameraparameterssingleton.h"
+#include "gamewindow.h"
 #include "matrices.h"
 #include "matrixstack.h"
 #include "objectmodel.h"
+#include "shaders.h"
 #include "textrendering.h"
 #include "utils.h"
 #include "virtualscene.h"
-#include "shaders.h"
-#include "callbacks.h"
-#include "camera.h"
-#include "gamewindow.h"
 
 // Ângulos de Euler que controlam a rotação de um dos cubos da cena virtual
 float g_AngleX = 0.0f;
@@ -111,12 +96,13 @@ int main(int argc, char* argv[])
 
     printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
 
-    VirtualScene virtualScene;
-
     // Carregamos os shaders de vértices e de fragmentos que serão utilizados
     // para renderização. Veja slides 176-196 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
     //
     Shaders shaders("./src/shaders/shader_fragment.glsl", "./src/shaders/shader_vertex.glsl");
+
+    VirtualScene virtualScene;
+    Camera* camera = new Camera(CameraParametersSingleton::getInstance());
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjectModel spheremodel("./data/sphere.obj");
@@ -175,25 +161,9 @@ int main(int argc, char* argv[])
         // os shaders de vértice e fragmentos).
         glUseProgram(shaders.program_id);
 
-        // Computamos a posição da câmera utilizando coordenadas esféricas.  As
-        // variáveis g_CameraDistance, g_CameraPhi, e g_CameraTheta são
-        // controladas pelo mouse do usuário. Veja as funções CursorPosCallback()
-        // e ScrollCallback().
-        float r = Camera::getInstance()->distance;
-        float y = r*sin(Camera::getInstance()->phi);
-        float z = r*cos(Camera::getInstance()->phi)*cos(Camera::getInstance()->theta);
-        float x = r*cos(Camera::getInstance()->phi)*sin(Camera::getInstance()->theta);
-
-        // Abaixo definimos as varáveis que efetivamente definem a câmera virtual.
-        // Veja slides 195-227 e 229-234 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-        glm::vec4 camera_position_c  = glm::vec4(x,y,z,1.0f); // Ponto "c", centro da câmera
-        glm::vec4 camera_lookat_l    = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
-        glm::vec4 camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
-        glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
-
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
         // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-        glm::mat4 view = Matrix_Camera_View(camera_position_c, camera_view_vector, camera_up_vector);
+        glm::mat4 view = Matrix_Camera_View(camera->getPosition(), camera->getViewVector(), camera->getUpVector());
 
         // Agora computamos a matriz de Projeção.
         glm::mat4 projection;
@@ -217,7 +187,7 @@ int main(int argc, char* argv[])
             // PARA PROJEÇÃO ORTOGRÁFICA veja slides 219-224 do documento Aula_09_Projecoes.pdf.
             // Para simular um "zoom" ortográfico, computamos o valor de "t"
             // utilizando a variável g_CameraDistance.
-            float t = 1.5f*Camera::getInstance()->distance/2.5f;
+            float t = 1.5f*camera->getParameters()->distance/2.5f;
             float b = -t;
             float r = t*GameWindow::getInstance()->getScreenRatio();
             float l = -r;
@@ -297,9 +267,3 @@ int main(int argc, char* argv[])
     // Fim do programa
     return 0;
 }
-
-
-
-// set makeprg=cd\ ..\ &&\ make\ run\ >/dev/null
-// vim: set spell spelllang=pt_br :
-
