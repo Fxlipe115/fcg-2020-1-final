@@ -13,6 +13,9 @@
 #include "matrices.h"
 #include "matrixstack.h"
 #include "objectmodel.h"
+#include "orthographicprojection.h"
+#include "perspectiveprojection.h"
+#include "projection.h"
 #include "shaders.h"
 #include "textrendering.h"
 #include "utils.h"
@@ -97,20 +100,17 @@ int main(int argc, char* argv[])
 
     printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
 
-    // Carregamos os shaders de vértices e de fragmentos que serão utilizados
-    // para renderização. Veja slides 176-196 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
-    //
     Shaders* shaders = new Shaders("./src/shaders/shader_fragment.glsl", "./src/shaders/shader_vertex.glsl");
     GpuProgram* gpuProgram = new GpuProgram(shaders);
+    GameWindow* gameWindow = GameWindow::getInstance();
     VirtualScene virtualScene;
     Camera* camera = new Camera(CameraParametersSingleton::getInstance());
 
-    // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjectModel spheremodel("./data/sphere.obj");
     spheremodel.computeNormals();
     spheremodel.buildTrianglesAndAddToVirtualScene(virtualScene);
 
-    ObjectModel bunnymodel("./data/bunny.obj");
+    ObjectModel bunnymodel("./data/Shrek.obj");
     bunnymodel.computeNormals();
     bunnymodel.buildTrianglesAndAddToVirtualScene(virtualScene);
 
@@ -164,22 +164,16 @@ int main(int argc, char* argv[])
 
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
         // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-        glm::mat4 view = camera->getViewMatrix();
+        glm::mat4 viewMatrix = camera->getViewMatrix();
 
         // Agora computamos a matriz de Projeção.
-        glm::mat4 projection;
-
-        // Note que, no sistema de coordenadas da câmera, os planos near e far
-        // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
-        float nearplane = -0.1f;  // Posição do "near plane"
-        float farplane  = -10.0f; // Posição do "far plane"
+        Projection* projection;
 
         if (g_UsePerspectiveProjection)
         {
             // Projeção Perspectiva.
             // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-            float field_of_view = 3.141592 / 3.0f;
-            projection = Matrix_Perspective(field_of_view, GameWindow::getInstance()->getScreenRatio(), nearplane, farplane);
+            projection = new PerspectiveProjection(camera, gameWindow);
         }
         else
         {
@@ -188,20 +182,18 @@ int main(int argc, char* argv[])
             // PARA PROJEÇÃO ORTOGRÁFICA veja slides 219-224 do documento Aula_09_Projecoes.pdf.
             // Para simular um "zoom" ortográfico, computamos o valor de "t"
             // utilizando a variável g_CameraDistance.
-            float t = 1.5f*camera->getParameters()->distance/2.5f;
-            float b = -t;
-            float r = t*GameWindow::getInstance()->getScreenRatio();
-            float l = -r;
-            projection = Matrix_Orthographic(l, r, b, t, nearplane, farplane);
+            projection = new OrthographicProjection(camera, gameWindow);
         }
+
+        glm::mat4 projectionMatrix = projection->generateMatrix();
 
         glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
 
         // Enviamos as matrizes "view" e "projection" para a placa de vídeo
         // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
         // efetivamente aplicadas em todos os pontos.
-        glUniformMatrix4fv(gpuProgram->getViewUniform()       , 1 , GL_FALSE , glm::value_ptr(view));
-        glUniformMatrix4fv(gpuProgram->getProjectionUniform() , 1 , GL_FALSE , glm::value_ptr(projection));
+        glUniformMatrix4fv(gpuProgram->getViewUniform()       , 1 , GL_FALSE , glm::value_ptr(viewMatrix));
+        glUniformMatrix4fv(gpuProgram->getProjectionUniform() , 1 , GL_FALSE , glm::value_ptr(projectionMatrix));
 
         #define SPHERE 0
         #define BUNNY  1
@@ -214,13 +206,17 @@ int main(int argc, char* argv[])
         virtualScene.drawObject("sphere");
 
         // Desenhamos o modelo do coelho
-        model = Matrix_Translate(1.0f,0.0f,0.0f) 
+        model = Matrix_Translate(0.0f,-0.8f,1.0f) 
+              * Matrix_Scale(0.02f,0.02f,0.02f)
               * Matrix_Rotate_Z(g_AngleZ) 
               * Matrix_Rotate_Y(g_AngleY) 
               * Matrix_Rotate_X(g_AngleX);
         glUniformMatrix4fv(gpuProgram->getModelUniform(), 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(gpuProgram->getObjectIdUniform(), BUNNY);
-        virtualScene.drawObject("bunny");
+        virtualScene.drawObject("Mesh_0103");
+        virtualScene.drawObject("Mesh_0104");
+        virtualScene.drawObject("Mesh_0105");
+        virtualScene.drawObject("Mesh_0106");
 
         model = Matrix_Translate(0.0f,-1.0f,0.0f)
               * Matrix_Scale(2.0f,1.0f,2.0f);
