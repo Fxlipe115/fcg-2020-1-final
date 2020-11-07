@@ -8,7 +8,8 @@ class CameraParameters
         float theta;
         float phi;
         float distance;
+        float nearPlane;
+        float farPlane;
 };
-
 
 #endif

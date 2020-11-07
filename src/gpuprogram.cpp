@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <string>
 
+#include "utils.h"
 
 GpuProgram::GpuProgram(Shaders* shaders) {
     // Deletamos o programa de GPU anterior, caso ele exista.

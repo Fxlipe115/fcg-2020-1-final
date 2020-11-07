@@ -9,7 +9,7 @@
 class GpuProgram {
     private:
         Shaders* shaders;
-        GLuint program_id;
+        GLuint program_id = 0;
         GLint model_uniform;
         GLint view_uniform;
         GLint projection_uniform;
