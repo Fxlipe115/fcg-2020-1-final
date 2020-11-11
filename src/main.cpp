@@ -13,6 +13,7 @@
 #include "matrices.h"
 #include "matrixstack.h"
 #include "objectmodel.h"
+#include "objectinstance.h"
 #include "orthographicprojection.h"
 #include "perspectiveprojection.h"
 #include "projection.h"
@@ -103,25 +104,25 @@ int main(int argc, char* argv[])
     Shaders* shaders = new Shaders("./src/shaders/shader_fragment.glsl", "./src/shaders/shader_vertex.glsl");
     GpuProgram* gpuProgram = new GpuProgram(shaders);
     GameWindow* gameWindow = GameWindow::getInstance();
-    VirtualScene virtualScene;
+    VirtualScene* virtualScene = new VirtualScene();
     Camera* camera = new Camera(CameraParametersSingleton::getInstance());
 
-    ObjectModel spheremodel("./data/sphere.obj");
-    spheremodel.computeNormals();
-    spheremodel.buildTrianglesAndAddToVirtualScene(virtualScene);
+    ObjectModel* spheremodel = new ObjectModel("./data/sphere.obj");
+    spheremodel->computeNormals();
+    spheremodel->buildTrianglesAndAddToVirtualScene(virtualScene);
 
-    ObjectModel bunnymodel("./data/Shrek.obj");
-    bunnymodel.computeNormals();
-    bunnymodel.buildTrianglesAndAddToVirtualScene(virtualScene);
+    ObjectModel* bunnymodel = new ObjectModel("./data/Shrek.obj");
+    bunnymodel->computeNormals();
+    bunnymodel->buildTrianglesAndAddToVirtualScene(virtualScene);
 
-    ObjectModel planemodel("./data/plane.obj");
-    planemodel.computeNormals();
-    planemodel.buildTrianglesAndAddToVirtualScene(virtualScene);
+    ObjectModel* planemodel = new ObjectModel("./data/plane.obj");
+    planemodel->computeNormals();
+    planemodel->buildTrianglesAndAddToVirtualScene(virtualScene);
 
     if ( argc > 1 )
     {
-        ObjectModel model(argv[1]);
-        model.buildTrianglesAndAddToVirtualScene(virtualScene);
+        ObjectModel* model = new ObjectModel(argv[1]);
+        model->buildTrianglesAndAddToVirtualScene(virtualScene);
     }
 
     // Inicializamos o código para renderização de texto.
@@ -134,12 +135,6 @@ int main(int argc, char* argv[])
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
-
-    // Variáveis auxiliares utilizadas para chamada à função
-    // TextRendering_ShowModelViewProjection(), armazenando matrizes 4x4.
-    glm::mat4 the_projection;
-    glm::mat4 the_model;
-    glm::mat4 the_view;
 
     // Ficamos em loop, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -160,13 +155,8 @@ int main(int argc, char* argv[])
 
         // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
         // os shaders de vértice e fragmentos).
-        glUseProgram(gpuProgram->getProgramId());
+        gpuProgram->use();
 
-        // Computamos a matriz "View" utilizando os parâmetros da câmera para
-        // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-        glm::mat4 viewMatrix = camera->getViewMatrix();
-
-        // Agora computamos a matriz de Projeção.
         Projection* projection;
 
         if (g_UsePerspectiveProjection)
@@ -185,45 +175,32 @@ int main(int argc, char* argv[])
             projection = new OrthographicProjection(camera, gameWindow);
         }
 
-        glm::mat4 projectionMatrix = projection->generateMatrix();
-
-        glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
-
         // Enviamos as matrizes "view" e "projection" para a placa de vídeo
         // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
         // efetivamente aplicadas em todos os pontos.
-        glUniformMatrix4fv(gpuProgram->getViewUniform()       , 1 , GL_FALSE , glm::value_ptr(viewMatrix));
-        glUniformMatrix4fv(gpuProgram->getProjectionUniform() , 1 , GL_FALSE , glm::value_ptr(projectionMatrix));
+        gpuProgram->specifyViewMatrix(camera->getViewMatrix());
+        gpuProgram->specifyProjectionMatrix(projection->generateMatrix());
 
-        #define SPHERE 0
-        #define BUNNY  1
-        #define PLANE  2
+        #define SPHERE 1
+        #define BUNNY  2
+        #define PLANE  4
 
         // Desenhamos o modelo da esfera
-        model = Matrix_Translate(-1.0f,0.0f,0.0f);
-        glUniformMatrix4fv(gpuProgram->getModelUniform(), 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(gpuProgram->getObjectIdUniform(), SPHERE);
-        virtualScene.drawObject("sphere");
+        ObjectInstance sphere(spheremodel);
+        sphere.setTranslation({-1.0f, 0.0f, 0.0f});
+        sphere.draw(gpuProgram, SPHERE);
 
         // Desenhamos o modelo do coelho
-        model = Matrix_Translate(0.0f,-0.8f,1.0f) 
-              * Matrix_Scale(0.02f,0.02f,0.02f)
-              * Matrix_Rotate_Z(g_AngleZ) 
-              * Matrix_Rotate_Y(g_AngleY) 
-              * Matrix_Rotate_X(g_AngleX);
-        glUniformMatrix4fv(gpuProgram->getModelUniform(), 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(gpuProgram->getObjectIdUniform(), BUNNY);
-        virtualScene.drawObject("Mesh_0103");
-        virtualScene.drawObject("Mesh_0104");
-        virtualScene.drawObject("Mesh_0105");
-        virtualScene.drawObject("Mesh_0106");
+        ObjectInstance bunny(bunnymodel);
+        bunny.setTranslation({0.0f, -0.8f, 1.0f});
+        bunny.setScale({0.02f, 0.02f, 0.02f});
+        bunny.setRotation({g_AngleX, g_AngleY, g_AngleZ});
+        bunny.draw(gpuProgram, BUNNY);
 
-        model = Matrix_Translate(0.0f,-1.0f,0.0f)
-              * Matrix_Scale(2.0f,1.0f,2.0f);
-        glUniformMatrix4fv(gpuProgram->getModelUniform(), 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(gpuProgram->getObjectIdUniform(), PLANE);
-        virtualScene.drawObject("plane");
-        
+        ObjectInstance plane(planemodel);
+        plane.setTranslation({0.0f, -1.0f, 0.0f});
+        plane.setScale({2.0f, 1.0f, 2.0f});
+        plane.draw(gpuProgram, PLANE);        
 
         // Pegamos um vértice com coordenadas de modelo (0.5, 0.5, 0.5, 1) e o
         // passamos por todos os sistemas de coordenadas armazenados nas

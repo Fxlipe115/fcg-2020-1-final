@@ -86,7 +86,7 @@ void ObjectModel::computeNormals() {
 }
 
 
-void ObjectModel::buildTrianglesAndAddToVirtualScene(VirtualScene& virtualScene)
+void ObjectModel::buildTrianglesAndAddToVirtualScene(VirtualScene* virtualScene)
 {
     GLuint vertex_array_object_id;
     glGenVertexArrays(1, &vertex_array_object_id);
@@ -155,8 +155,11 @@ void ObjectModel::buildTrianglesAndAddToVirtualScene(VirtualScene& virtualScene)
         theobject.num_indices    = last_index - first_index + 1; // Número de indices
         theobject.rendering_mode = GL_TRIANGLES;       // Índices correspondem ao tipo de rasterização GL_TRIANGLES.
         theobject.vertex_array_object_id = vertex_array_object_id;
-
-        virtualScene.addSceneObject(theobject);
+        
+        this->meshNames.push_back(theobject.name);
+        
+        this->virtualScene = virtualScene;
+        this->virtualScene->addSceneObject(theobject);
     }
 
     GLuint VBO_model_coefficients_id;
@@ -211,6 +214,13 @@ void ObjectModel::buildTrianglesAndAddToVirtualScene(VirtualScene& virtualScene)
     // "Desligamos" o VAO, evitando assim que operações posteriores venham a
     // alterar o mesmo. Isso evita bugs.
     glBindVertexArray(0);
+}
+
+
+void ObjectModel::draw() {
+  for(std::string meshName : this->meshNames) {
+    this->virtualScene->drawObject(meshName.c_str());
+  }
 }
 
 

@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "glm/mat4x4.hpp"
 #include "shaders.h"
 
 class GpuProgram {
@@ -13,15 +14,15 @@ class GpuProgram {
         GLint model_uniform;
         GLint view_uniform;
         GLint projection_uniform;
-        GLint object_id_uniform;
+        GLint shader_flags_uniform;
     public:
         GpuProgram(Shaders* shaders);
         static GLuint createGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id);
-        GLuint getProgramId();
-        GLuint getModelUniform();
-        GLuint getViewUniform();
-        GLuint getProjectionUniform();
-        GLuint getObjectIdUniform();
+        void use();
+        void specifyModelMatrix(glm::mat4 modelMatrix);
+        void specifyViewMatrix(glm::mat4 viewMatrix);
+        void specifyProjectionMatrix(glm::mat4 projectionMatrix);
+        void specifyShaderFlags(int shaderFlags);
 };
 
 #endif

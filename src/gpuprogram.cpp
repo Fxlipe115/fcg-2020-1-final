@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <string>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include "utils.h"
 
 GpuProgram::GpuProgram(Shaders* shaders) {
@@ -19,7 +21,7 @@ GpuProgram::GpuProgram(Shaders* shaders) {
     model_uniform           = glGetUniformLocation(program_id, "model"); // Variável da matriz "model"
     view_uniform            = glGetUniformLocation(program_id, "view"); // Variável da matriz "view" em shader_vertex.glsl
     projection_uniform      = glGetUniformLocation(program_id, "projection"); // Variável da matriz "projection" em shader_vertex.glsl
-    object_id_uniform       = glGetUniformLocation(program_id, "object_id"); // Variável "object_id" em shader_fragment.glsl
+    shader_flags_uniform    = glGetUniformLocation(program_id, "shader_flags"); // Variável "object_id" em shader_fragment.glsl
 }
 
 // Esta função cria um programa de GPU, o qual contém obrigatoriamente um
@@ -73,26 +75,27 @@ GLuint GpuProgram::createGpuProgram(GLuint vertex_shader_id, GLuint fragment_sha
 }
 
 
-GLuint GpuProgram::getProgramId() {
-    return program_id;
+void GpuProgram::use() {
+    glUseProgram(program_id);
 }
 
 
-GLuint GpuProgram::getModelUniform() {
-    return model_uniform;
+void GpuProgram::specifyModelMatrix(glm::mat4 modelMatrix) {
+    glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(modelMatrix));
 }
 
 
-GLuint GpuProgram::getViewUniform() {
-    return view_uniform;
+void GpuProgram::specifyViewMatrix(glm::mat4 viewMatrix) {
+    glUniformMatrix4fv(view_uniform , 1 , GL_FALSE , glm::value_ptr(viewMatrix));
+        
 }
 
 
-GLuint GpuProgram::getProjectionUniform() {
-    return projection_uniform;
+void GpuProgram::specifyProjectionMatrix(glm::mat4 projectionMatrix) {
+    glUniformMatrix4fv(projection_uniform , 1 , GL_FALSE , glm::value_ptr(projectionMatrix));
 }
 
 
-GLuint GpuProgram::getObjectIdUniform() {
-    return object_id_uniform;
+void GpuProgram::specifyShaderFlags(int shaderFlags) {
+    glUniform1i(shader_flags_uniform, shaderFlags);
 }

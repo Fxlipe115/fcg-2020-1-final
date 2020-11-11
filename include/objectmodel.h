@@ -11,15 +11,18 @@
 
 class ObjectModel {
     private:
-        tinyobj::attrib_t                 attrib;
-        std::vector<tinyobj::shape_t>     shapes;
-        std::vector<tinyobj::material_t>  materials;
+        tinyobj::attrib_t attrib;
+        std::vector<tinyobj::shape_t> shapes;
+        std::vector<tinyobj::material_t> materials;
+        std::vector<std::string> meshNames;
+        VirtualScene* virtualScene;
 
     public:
         ObjectModel(const char* filename, const char* basepath = NULL, bool triangulate = true);
         void computeNormals();
-        void buildTrianglesAndAddToVirtualScene(VirtualScene& virtualScene);
+        void buildTrianglesAndAddToVirtualScene(VirtualScene* virtualScene);
         void printObjectModelInfo();
+        void draw();
 };
 
 #endif

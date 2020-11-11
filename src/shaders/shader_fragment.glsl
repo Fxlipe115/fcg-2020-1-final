@@ -13,10 +13,10 @@ uniform mat4 view;
 uniform mat4 projection;
 
 // Identificador que define qual objeto está sendo desenhado no momento
-#define SPHERE 0
-#define BUNNY  1
-#define PLANE  2
-uniform int object_id;
+#define SPHERE 1
+#define BUNNY  2
+#define PLANE  4
+uniform int shader_flags;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec3 color;
@@ -58,8 +58,7 @@ void main()
     vec3 Ka; // Refletância ambiente
     float q; // Expoente especular para o modelo de iluminação de Phong
 
-    if ( object_id == SPHERE )
-    {
+    if((shader_flags & SPHERE) != 0) {
         // PREENCHA AQUI
         // Propriedades espectrais da esfera
         Kd = vec3(1.0,1.0,1.0);
@@ -67,8 +66,8 @@ void main()
         Ka = vec3(0.4,0.2,0.04);
         q = 1.0;
     }
-    else if ( object_id == BUNNY )
-    {
+
+    if((shader_flags & BUNNY) != 0) {
         // PREENCHA AQUI
         // Propriedades espectrais do coelho
         Kd = vec3(0.08,0.4,0.8);
@@ -76,8 +75,8 @@ void main()
         Ka = vec3(0.4,0.4,0.4);
         q = 32.0;
     }
-    else if ( object_id == PLANE )
-    {
+
+    if((shader_flags & PLANE) != 0) {
         // PREENCHA AQUI
         // Propriedades espectrais do plano
         Kd = vec3(0.2,0.2,0.2);
@@ -85,8 +84,9 @@ void main()
         Ka = vec3(0.0,0.0,0.0);
         q = 20.0;
     }
-    else // Objeto desconhecido = preto
-    {
+
+    if(shader_flags == 0) {
+        // Objeto desconhecido = preto
         Kd = vec3(0.0,0.0,0.0);
         Ks = vec3(0.0,0.0,0.0);
         Ka = vec3(0.0,0.0,0.0);
