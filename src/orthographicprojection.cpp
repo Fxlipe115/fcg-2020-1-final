@@ -2,13 +2,13 @@
 
 #include "matrices.h"
 
-OrthographicProjection::OrthographicProjection(Camera* camera, GameWindow* gameWindow)
- : Projection(camera, gameWindow)
+OrthographicProjection::OrthographicProjection(Camera* camera, WindowParameters* windowParameters)
+ : Projection(camera, windowParameters)
 {
 }
 
 glm::mat4 OrthographicProjection::generateMatrix() {
-    float screenRatio = gameWindow->getScreenRatio();
+    float screenRatio = windowParameters->screenRatio;
     float nearPlane = camera->getParameters()->nearPlane;
     float farPlane = camera->getParameters()->farPlane;
     float distance = camera->getParameters()->distance;

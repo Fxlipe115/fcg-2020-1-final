@@ -4,14 +4,14 @@
 #include "glm/mat4x4.hpp"
 
 #include "camera.h"
-#include "gamewindow.h"
+#include "windowparameters.h"
 
 class Projection {
     protected:
         Camera* camera;
-        GameWindow* gameWindow;
+        WindowParameters* windowParameters;
     public:
-        Projection(Camera* camera, GameWindow* gameWindow);
+        Projection(Camera* camera, WindowParameters* windowParameters);
         virtual glm::mat4 generateMatrix() = 0;
 };
 

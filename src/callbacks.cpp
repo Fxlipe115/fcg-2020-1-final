@@ -3,12 +3,23 @@
 #include <cstdio>
 #include <limits>
 
-#include "cameraparameterssingleton.h"
-#include "gamewindow.h"
-#include "mouse.h"
+Callbacks* Callbacks::instance = nullptr;
 
-void framebufferSizeCallback(GLFWwindow* window, int width, int height)
+Callbacks* Callbacks::getInstance() {
+    if(instance == nullptr) {
+        instance = new Callbacks();
+    }
+    return instance;
+}
+
+Callbacks::Callbacks() {
+}
+
+void Callbacks::framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
+    Callbacks* callbacks = Callbacks::getInstance();
+    WindowParameters* windowParameters = callbacks->windowParameters;
+
     // Indicamos que queremos renderizar em toda região do framebuffer. A
     // função "glViewport" define o mapeamento das "normalized device
     // coordinates" (NDC) para "pixel coordinates".  Essa é a operação de
@@ -22,22 +33,25 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height)
     //
     // O cast para float é necessário pois números inteiros são arredondados ao
     // serem divididos!
-    GameWindow::getInstance()->setScreenRatio((float)width / height);
+    windowParameters->screenRatio = (float)width / height;
 }
 
 
-void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+void Callbacks::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
+    Callbacks* callbacks = Callbacks::getInstance();
+    MouseParameters* mouseParameters = callbacks->mouseParameters;
+
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
     {
-        glfwGetCursorPos(window, &Mouse::getInstance()->lastCursorPositionX, &Mouse::getInstance()->lastCursorPositionY);
-        Mouse::getInstance()->leftButtonPressed = true;
+        glfwGetCursorPos(window, &mouseParameters->lastCursorPositionX, &mouseParameters->lastCursorPositionY);
+        mouseParameters->leftButtonPressed = true;
     }
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
     {
         // Quando o usuário soltar o botão esquerdo do mouse, atualizamos a
         // variável abaixo para false.
-        Mouse::getInstance()->leftButtonPressed = false;
+        mouseParameters->leftButtonPressed = false;
     }
     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
     {
@@ -46,14 +60,14 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
         // g_LastCursorPosY.  Também, setamos a variável
         // g_RightMouseButtonPressed como true, para saber que o usuário está
         // com o botão esquerdo pressionado.
-        glfwGetCursorPos(window, &Mouse::getInstance()->lastCursorPositionX, &Mouse::getInstance()->lastCursorPositionY);
-        Mouse::getInstance()->rightButtonPressed = true;
+        glfwGetCursorPos(window, &mouseParameters->lastCursorPositionX, &mouseParameters->lastCursorPositionY);
+        mouseParameters->rightButtonPressed = true;
     }
     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
     {
         // Quando o usuário soltar o botão esquerdo do mouse, atualizamos a
         // variável abaixo para false.
-        Mouse::getInstance()->rightButtonPressed = false;
+        mouseParameters->rightButtonPressed = false;
     }
     if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS)
     {
@@ -62,25 +76,28 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
         // g_LastCursorPosY.  Também, setamos a variável
         // g_MiddleMouseButtonPressed como true, para saber que o usuário está
         // com o botão esquerdo pressionado.
-        glfwGetCursorPos(window, &Mouse::getInstance()->lastCursorPositionX, &Mouse::getInstance()->lastCursorPositionY);
-        Mouse::getInstance()->middleButtonPressed = true;
+        glfwGetCursorPos(window, &mouseParameters->lastCursorPositionX, &mouseParameters->lastCursorPositionY);
+        mouseParameters->middleButtonPressed = true;
     }
     if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_RELEASE)
     {
         // Quando o usuário soltar o botão esquerdo do mouse, atualizamos a
         // variável abaixo para false.
-        Mouse::getInstance()->middleButtonPressed = false;
+        mouseParameters->middleButtonPressed = false;
     }
 }
 
 
-void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
-    float dx = xpos - Mouse::getInstance()->lastCursorPositionX;
-    float dy = ypos - Mouse::getInstance()->lastCursorPositionY;
+void Callbacks::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+    Callbacks* callbacks = Callbacks::getInstance();
+    CameraParameters* cameraParameters = callbacks->cameraParameters;
+    MouseParameters* mouseParameters = callbacks->mouseParameters;
 
-    CameraParameters* cameraParameters = CameraParametersSingleton::getInstance();
+    float dx = xpos - mouseParameters->lastCursorPositionX;
+    float dy = ypos - mouseParameters->lastCursorPositionY;
 
-    if (Mouse::getInstance()->leftButtonPressed)
+
+    if (mouseParameters->leftButtonPressed)
     {
         // Atualizamos parâmetros da câmera com os deslocamentos
         cameraParameters->theta -= 0.01f*dx;
@@ -97,24 +114,24 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
             cameraParameters->phi = phimin;
     }
 
-    if (Mouse::getInstance()->rightButtonPressed)
+    if (mouseParameters->rightButtonPressed)
     {
         // Do something
     }
 
-    if (Mouse::getInstance()->middleButtonPressed)
+    if (mouseParameters->middleButtonPressed)
     {
         // Do something
     }
 
-    Mouse::getInstance()->lastCursorPositionX = xpos;
-    Mouse::getInstance()->lastCursorPositionY = ypos;
+    mouseParameters->lastCursorPositionX = xpos;
+    mouseParameters->lastCursorPositionY = ypos;
 }
 
 
-void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
-{
-    CameraParameters* cameraParameters = CameraParametersSingleton::getInstance();
+void Callbacks::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+    Callbacks* callbacks = Callbacks::getInstance();
+    CameraParameters* cameraParameters = callbacks->cameraParameters;
 
     // Atualizamos a distância da câmera para a origem utilizando a
     // movimentação da "rodinha", simulando um ZOOM.
@@ -131,8 +148,9 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 }
 
 
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
-{
+void Callbacks::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mod) {
+    Callbacks* callbacks = Callbacks::getInstance();
+
     // Se o usuário pressionar a tecla ESC, fechamos a janela.
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -197,7 +215,21 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
 }
 
 
-void errorCallback(int error, const char* description)
+void Callbacks::errorCallback(int error, const char* description)
 {
     fprintf(stderr, "ERROR: GLFW: %s\n", description);
+}
+
+
+void Callbacks::setWindowParameters(WindowParameters* windowParameters) {
+    this->windowParameters = windowParameters;
+}
+
+
+void Callbacks::setCameraParameters(CameraParameters* cameraParameters) {
+    this->cameraParameters = cameraParameters;
+}
+
+void Callbacks::setMouseParameters(MouseParameters* mouseParameters) {
+    this->mouseParameters = mouseParameters;
 }

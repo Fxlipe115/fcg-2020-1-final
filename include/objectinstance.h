@@ -6,6 +6,7 @@
 #include "coordinates.h"
 #include "gpuprogram.h"
 #include "objectmodel.h"
+#include "shaderflags.h"
 
 class ObjectInstance {
     private:
@@ -22,7 +23,7 @@ class ObjectInstance {
         Coordinates getTranslation();
         void setRotation(Coordinates rotation);
         Coordinates getRotation();
-        void draw(GpuProgram* gpuProgram, int shaderFlags);
+        void draw(GpuProgram* gpuProgram, ShaderFlags shaderFlags);
 };
 
 #endif

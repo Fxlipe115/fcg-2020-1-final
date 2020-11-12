@@ -39,7 +39,7 @@ Coordinates ObjectInstance::getRotation() {
     return rotation;
 }
 
-void ObjectInstance::draw(GpuProgram* gpuProgram, int shaderFlags) {
+void ObjectInstance::draw(GpuProgram* gpuProgram, ShaderFlags shaderFlags) {
     glm::mat4 transformationMatrix = this->transformationMatrix();
         
     gpuProgram->specifyModelMatrix(transformationMatrix);

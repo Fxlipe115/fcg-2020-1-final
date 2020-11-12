@@ -7,11 +7,10 @@
 
 #include "callbacks.h"
 #include "camera.h"
-#include "cameraparameterssingleton.h"
-#include "gamewindow.h"
 #include "gpuprogram.h"
 #include "matrices.h"
 #include "matrixstack.h"
+#include "mouseparameters.h"
 #include "objectmodel.h"
 #include "objectinstance.h"
 #include "orthographicprojection.h"
@@ -21,6 +20,7 @@
 #include "textrendering.h"
 #include "utils.h"
 #include "virtualscene.h"
+#include "windowparameters.h"
 
 // Ângulos de Euler que controlam a rotação de um dos cubos da cena virtual
 float g_AngleX = 0.0f;
@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
     }
 
     // Definimos o callback para impressão de erros da GLFW no terminal
-    glfwSetErrorCallback(errorCallback);
+    glfwSetErrorCallback(Callbacks::errorCallback);
 
     // Pedimos para utilizar OpenGL versão 3.3 (ou superior)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -72,13 +72,13 @@ int main(int argc, char* argv[])
 
     // Definimos a função de callback que será chamada sempre que o usuário
     // pressionar alguma tecla do teclado ...
-    glfwSetKeyCallback(window, keyCallback);
+    glfwSetKeyCallback(window, Callbacks::keyCallback);
     // ... ou clicar os botões do mouse ...
-    glfwSetMouseButtonCallback(window, mouseButtonCallback);
+    glfwSetMouseButtonCallback(window, Callbacks::mouseButtonCallback);
     // ... ou movimentar o cursor do mouse em cima da janela ...
-    glfwSetCursorPosCallback(window, cursorPosCallback);
+    glfwSetCursorPosCallback(window, Callbacks::cursorPosCallback);
     // ... ou rolar a "rodinha" do mouse.
-    glfwSetScrollCallback(window, scrollCallback);
+    glfwSetScrollCallback(window, Callbacks::scrollCallback);
 
     // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
     glfwMakeContextCurrent(window);
@@ -86,12 +86,6 @@ int main(int argc, char* argv[])
     // Carregamento de todas funções definidas por OpenGL 3.3, utilizando a
     // biblioteca GLAD.
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-
-    // Definimos a função de callback que será chamada sempre que a janela for
-    // redimensionada, por consequência alterando o tamanho do "framebuffer"
-    // (região de memória onde são armazenados os pixels da imagem).
-    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-    framebufferSizeCallback(window, 800, 600); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
 
     // Imprimimos no terminal informações sobre a GPU do sistema
     const GLubyte *vendor      = glGetString(GL_VENDOR);
@@ -101,11 +95,25 @@ int main(int argc, char* argv[])
 
     printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
 
+    WindowParameters* windowParameters = new WindowParameters();
+    CameraParameters* cameraParameters = new CameraParameters();
+    MouseParameters* mouseParameters = new MouseParameters();
+
+    Callbacks* callbacks = Callbacks::getInstance();
+    callbacks->setWindowParameters(windowParameters);
+    callbacks->setCameraParameters(cameraParameters);
+    callbacks->setMouseParameters(mouseParameters);
+
+    // Definimos a função de callback que será chamada sempre que a janela for
+    // redimensionada, por consequência alterando o tamanho do "framebuffer"
+    // (região de memória onde são armazenados os pixels da imagem).
+    glfwSetFramebufferSizeCallback(window, Callbacks::framebufferSizeCallback);
+    Callbacks::framebufferSizeCallback(window, 800, 600); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
+
     Shaders* shaders = new Shaders("./src/shaders/shader_fragment.glsl", "./src/shaders/shader_vertex.glsl");
     GpuProgram* gpuProgram = new GpuProgram(shaders);
-    GameWindow* gameWindow = GameWindow::getInstance();
     VirtualScene* virtualScene = new VirtualScene();
-    Camera* camera = new Camera(CameraParametersSingleton::getInstance());
+    Camera* camera = new Camera(cameraParameters);
 
     ObjectModel* spheremodel = new ObjectModel("./data/sphere.obj");
     spheremodel->computeNormals();
@@ -163,7 +171,7 @@ int main(int argc, char* argv[])
         {
             // Projeção Perspectiva.
             // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-            projection = new PerspectiveProjection(camera, gameWindow);
+            projection = new PerspectiveProjection(camera, windowParameters);
         }
         else
         {
@@ -172,7 +180,7 @@ int main(int argc, char* argv[])
             // PARA PROJEÇÃO ORTOGRÁFICA veja slides 219-224 do documento Aula_09_Projecoes.pdf.
             // Para simular um "zoom" ortográfico, computamos o valor de "t"
             // utilizando a variável g_CameraDistance.
-            projection = new OrthographicProjection(camera, gameWindow);
+            projection = new OrthographicProjection(camera, windowParameters);
         }
 
         // Enviamos as matrizes "view" e "projection" para a placa de vídeo
@@ -181,26 +189,22 @@ int main(int argc, char* argv[])
         gpuProgram->specifyViewMatrix(camera->getViewMatrix());
         gpuProgram->specifyProjectionMatrix(projection->generateMatrix());
 
-        #define SPHERE 1
-        #define BUNNY  2
-        #define PLANE  4
-
         // Desenhamos o modelo da esfera
         ObjectInstance sphere(spheremodel);
         sphere.setTranslation({-1.0f, 0.0f, 0.0f});
-        sphere.draw(gpuProgram, SPHERE);
+        sphere.draw(gpuProgram, ShaderFlags::SPHERE);
 
         // Desenhamos o modelo do coelho
         ObjectInstance bunny(bunnymodel);
         bunny.setTranslation({0.0f, -0.8f, 1.0f});
         bunny.setScale({0.02f, 0.02f, 0.02f});
         bunny.setRotation({g_AngleX, g_AngleY, g_AngleZ});
-        bunny.draw(gpuProgram, BUNNY);
+        bunny.draw(gpuProgram, ShaderFlags::BUNNY);
 
         ObjectInstance plane(planemodel);
         plane.setTranslation({0.0f, -1.0f, 0.0f});
         plane.setScale({2.0f, 1.0f, 2.0f});
-        plane.draw(gpuProgram, PLANE);        
+        plane.draw(gpuProgram, ShaderFlags::PLANE);
 
         // Pegamos um vértice com coordenadas de modelo (0.5, 0.5, 0.5, 1) e o
         // passamos por todos os sistemas de coordenadas armazenados nas

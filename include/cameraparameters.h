@@ -1,15 +1,14 @@
 #ifndef _CAMERAPARAMETERS_H
 #define _CAMERAPARAMETERS_H
 
-class CameraParameters
+struct CameraParameters
 {
-    public:
-        CameraParameters();
-        float theta;
-        float phi;
-        float distance;
-        float nearPlane;
-        float farPlane;
+    CameraParameters();
+    float theta;
+    float phi;
+    float distance;
+    float nearPlane;
+    float farPlane;
 };
 
 #endif
