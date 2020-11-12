@@ -4,9 +4,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "windowparameters.h"
 #include "cameraparameters.h"
 #include "mouseparameters.h"
+#include "playerparameters.h"
+#include "windowparameters.h"
 
 class Callbacks {
 private:
@@ -15,6 +16,7 @@ private:
     WindowParameters* windowParameters;
     CameraParameters* cameraParameters;
     MouseParameters* mouseParameters;
+    PlayerParameters* playerParameters;
 public:
     static Callbacks* getInstance();
     static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -26,6 +28,7 @@ public:
     void setWindowParameters(WindowParameters* windowParameters);
     void setCameraParameters(CameraParameters* cameraParamenters);
     void setMouseParameters(MouseParameters* mouseParameters);
+    void setPlayerParameters(PlayerParameters* playerParameters);
 };
 
 #endif

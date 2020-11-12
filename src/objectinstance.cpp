@@ -39,7 +39,7 @@ Coordinates ObjectInstance::getRotation() {
     return rotation;
 }
 
-void ObjectInstance::draw(GpuProgram* gpuProgram, ShaderFlags shaderFlags) {
+void ObjectInstance::draw(GpuProgram* gpuProgram, int shaderFlags) {
     glm::mat4 transformationMatrix = this->transformationMatrix();
         
     gpuProgram->specifyModelMatrix(transformationMatrix);
@@ -48,9 +48,9 @@ void ObjectInstance::draw(GpuProgram* gpuProgram, ShaderFlags shaderFlags) {
 }
 
 glm::mat4 ObjectInstance::transformationMatrix() {
-    return Matrix_Translate(translation.x, translation.y, translation.z) 
+    return Matrix_Translate(translation.x, translation.y, translation.z)
          * Matrix_Scale(scale.x, scale.y, scale.z)
-         * Matrix_Rotate_Z(rotation.z) 
-         * Matrix_Rotate_Y(rotation.y) 
+         * Matrix_Rotate_Z(rotation.z)
+         * Matrix_Rotate_Y(rotation.y)
          * Matrix_Rotate_X(rotation.x);
 }

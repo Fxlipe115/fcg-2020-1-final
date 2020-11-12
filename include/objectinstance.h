@@ -23,7 +23,7 @@ class ObjectInstance {
         Coordinates getTranslation();
         void setRotation(Coordinates rotation);
         Coordinates getRotation();
-        void draw(GpuProgram* gpuProgram, ShaderFlags shaderFlags);
+        void draw(GpuProgram* gpuProgram, int shaderFlags);
 };
 
 #endif

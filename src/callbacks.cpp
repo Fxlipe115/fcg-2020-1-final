@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <limits>
 
+
 Callbacks* Callbacks::instance = nullptr;
 
 Callbacks* Callbacks::getInstance() {
@@ -150,6 +151,7 @@ void Callbacks::scrollCallback(GLFWwindow* window, double xoffset, double yoffse
 
 void Callbacks::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mod) {
     Callbacks* callbacks = Callbacks::getInstance();
+    PlayerParameters* playerParameters = callbacks->playerParameters;
 
     // Se o usuário pressionar a tecla ESC, fechamos a janela.
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -167,24 +169,24 @@ void Callbacks::keyCallback(GLFWwindow* window, int key, int scancode, int actio
 
     if (key == GLFW_KEY_X && action == GLFW_PRESS)
     {
-        //g_AngleX += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
+        playerParameters->rotation.x += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
     }
 
     if (key == GLFW_KEY_Y && action == GLFW_PRESS)
     {
-        //g_AngleY += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
+        playerParameters->rotation.y += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
     }
     if (key == GLFW_KEY_Z && action == GLFW_PRESS)
     {
-        //g_AngleZ += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
+        playerParameters->rotation.z += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
     }
 
     // Se o usuário apertar a tecla espaço, resetamos os ângulos de Euler para zero.
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
     {
-        //g_AngleX = 0.0f;
-        //g_AngleY = 0.0f;
-        //g_AngleZ = 0.0f;
+        playerParameters->rotation.x = 0.0f;
+        playerParameters->rotation.y = 0.0f;
+        playerParameters->rotation.z = 0.0f;
     }
 
     // Se o usuário apertar a tecla P, utilizamos projeção perspectiva.
@@ -232,4 +234,8 @@ void Callbacks::setCameraParameters(CameraParameters* cameraParameters) {
 
 void Callbacks::setMouseParameters(MouseParameters* mouseParameters) {
     this->mouseParameters = mouseParameters;
+}
+
+void Callbacks::setPlayerParameters(PlayerParameters* playerParameters) {
+    this->playerParameters = playerParameters;
 }

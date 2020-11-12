@@ -1,6 +1,7 @@
+#include <cmath>
+
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
 #include <GLFW/glfw3.h>  // Criação de janelas do sistema operacional
-
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -22,11 +23,6 @@
 #include "virtualscene.h"
 #include "windowparameters.h"
 
-// Ângulos de Euler que controlam a rotação de um dos cubos da cena virtual
-float g_AngleX = 0.0f;
-float g_AngleY = 0.0f;
-float g_AngleZ = 0.0f;
-
 // Variável que controla o tipo de projeção utilizada: perspectiva ou ortográfica.
 bool g_UsePerspectiveProjection = true;
 
@@ -43,9 +39,6 @@ int main(int argc, char* argv[])
         fprintf(stderr, "ERROR: glfwInit() failed.\n");
         std::exit(EXIT_FAILURE);
     }
-
-    // Definimos o callback para impressão de erros da GLFW no terminal
-    glfwSetErrorCallback(Callbacks::errorCallback);
 
     // Pedimos para utilizar OpenGL versão 3.3 (ou superior)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -70,16 +63,6 @@ int main(int argc, char* argv[])
         std::exit(EXIT_FAILURE);
     }
 
-    // Definimos a função de callback que será chamada sempre que o usuário
-    // pressionar alguma tecla do teclado ...
-    glfwSetKeyCallback(window, Callbacks::keyCallback);
-    // ... ou clicar os botões do mouse ...
-    glfwSetMouseButtonCallback(window, Callbacks::mouseButtonCallback);
-    // ... ou movimentar o cursor do mouse em cima da janela ...
-    glfwSetCursorPosCallback(window, Callbacks::cursorPosCallback);
-    // ... ou rolar a "rodinha" do mouse.
-    glfwSetScrollCallback(window, Callbacks::scrollCallback);
-
     // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
     glfwMakeContextCurrent(window);
 
@@ -98,11 +81,13 @@ int main(int argc, char* argv[])
     WindowParameters* windowParameters = new WindowParameters();
     CameraParameters* cameraParameters = new CameraParameters();
     MouseParameters* mouseParameters = new MouseParameters();
+    PlayerParameters* playerParameters = new PlayerParameters();
 
     Callbacks* callbacks = Callbacks::getInstance();
     callbacks->setWindowParameters(windowParameters);
     callbacks->setCameraParameters(cameraParameters);
     callbacks->setMouseParameters(mouseParameters);
+    callbacks->setPlayerParameters(playerParameters);
 
     // Definimos a função de callback que será chamada sempre que a janela for
     // redimensionada, por consequência alterando o tamanho do "framebuffer"
@@ -110,21 +95,30 @@ int main(int argc, char* argv[])
     glfwSetFramebufferSizeCallback(window, Callbacks::framebufferSizeCallback);
     Callbacks::framebufferSizeCallback(window, 800, 600); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
 
+    // Definimos o callback para impressão de erros da GLFW no terminal
+    glfwSetErrorCallback(Callbacks::errorCallback);
+    // Definimos a função de callback que será chamada sempre que o usuário
+    // pressionar alguma tecla do teclado ...
+    glfwSetKeyCallback(window, Callbacks::keyCallback);
+    // ... ou clicar os botões do mouse ...
+    glfwSetMouseButtonCallback(window, Callbacks::mouseButtonCallback);
+    // ... ou movimentar o cursor do mouse em cima da janela ...
+    glfwSetCursorPosCallback(window, Callbacks::cursorPosCallback);
+    // ... ou rolar a "rodinha" do mouse.
+    glfwSetScrollCallback(window, Callbacks::scrollCallback);
+
     Shaders* shaders = new Shaders("./src/shaders/shader_fragment.glsl", "./src/shaders/shader_vertex.glsl");
     GpuProgram* gpuProgram = new GpuProgram(shaders);
     VirtualScene* virtualScene = new VirtualScene();
     Camera* camera = new Camera(cameraParameters);
 
     ObjectModel* spheremodel = new ObjectModel("./data/sphere.obj");
-    spheremodel->computeNormals();
     spheremodel->buildTrianglesAndAddToVirtualScene(virtualScene);
 
-    ObjectModel* bunnymodel = new ObjectModel("./data/Shrek.obj");
-    bunnymodel->computeNormals();
-    bunnymodel->buildTrianglesAndAddToVirtualScene(virtualScene);
+    ObjectModel* playerModel = new ObjectModel("./data/Shrek.obj");
+    playerModel->buildTrianglesAndAddToVirtualScene(virtualScene);
 
     ObjectModel* planemodel = new ObjectModel("./data/plane.obj");
-    planemodel->computeNormals();
     planemodel->buildTrianglesAndAddToVirtualScene(virtualScene);
 
     if ( argc > 1 )
@@ -195,11 +189,11 @@ int main(int argc, char* argv[])
         sphere.draw(gpuProgram, ShaderFlags::SPHERE);
 
         // Desenhamos o modelo do coelho
-        ObjectInstance bunny(bunnymodel);
-        bunny.setTranslation({0.0f, -0.8f, 1.0f});
-        bunny.setScale({0.02f, 0.02f, 0.02f});
-        bunny.setRotation({g_AngleX, g_AngleY, g_AngleZ});
-        bunny.draw(gpuProgram, ShaderFlags::BUNNY);
+        ObjectInstance player(playerModel);
+        player.setTranslation({0.0f, -0.8f, 1.0f});
+        player.setScale({0.02f, 0.02f, 0.02f});
+        player.setRotation(playerParameters->rotation);
+        player.draw(gpuProgram, ShaderFlags::BUNNY);
 
         ObjectInstance plane(planemodel);
         plane.setTranslation({0.0f, -1.0f, 0.0f});
@@ -215,7 +209,9 @@ int main(int argc, char* argv[])
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
-        TextRendering_ShowEulerAngles(window, g_AngleX, g_AngleY, g_AngleZ, g_ShowInfoText);
+        TextRendering_ShowEulerAngles(window, playerParameters->rotation.x, 
+                                      playerParameters->rotation.y, 
+                                      playerParameters->rotation.z, g_ShowInfoText);
 
         // Imprimimos na informação sobre a matriz de projeção sendo utilizada.
         TextRendering_ShowProjection(window, g_ShowInfoText, g_UsePerspectiveProjection);

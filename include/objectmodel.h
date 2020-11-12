@@ -16,10 +16,10 @@ class ObjectModel {
         std::vector<tinyobj::material_t> materials;
         std::vector<std::string> meshNames;
         VirtualScene* virtualScene;
+        void computeNormals();
 
     public:
         ObjectModel(const char* filename, const char* basepath = NULL, bool triangulate = true);
-        void computeNormals();
         void buildTrianglesAndAddToVirtualScene(VirtualScene* virtualScene);
         void printObjectModelInfo();
         void draw();
