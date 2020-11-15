@@ -1,13 +1,11 @@
 #ifndef _PLAYERPARAMETERS_H
 #define _PLAYERPARAMETERS_H
 
-#include "glm/vec4.hpp"
-
-#include "coordinates.h"
+#include "glm/vec3.hpp"
 
 struct PlayerParameters {
-    Coordinates rotation;
-    Coordinates position;
+    glm::vec3 rotation;
+    glm::vec3 position;
 };
 
 #endif

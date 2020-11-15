@@ -91,7 +91,6 @@ void Callbacks::mouseButtonCallback(GLFWwindow* window, int button, int action, 
 
 void Callbacks::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
     Callbacks* callbacks = Callbacks::getInstance();
-    CameraParameters* cameraParameters = callbacks->cameraParameters;
     MouseParameters* mouseParameters = callbacks->mouseParameters;
 
     float dx = xpos - mouseParameters->lastCursorPositionX;
@@ -101,18 +100,18 @@ void Callbacks::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) 
     if (mouseParameters->leftButtonPressed)
     {
         // Atualizamos parâmetros da câmera com os deslocamentos
-        cameraParameters->theta -= 0.01f*dx;
-        cameraParameters->phi += 0.01f*dy;
+        mouseParameters->rotationAngleTheta -= 0.01f*dx;
+        mouseParameters->rotationAnglePhi += 0.01f*dy;
     
         // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
         float phimax = 3.141592f/2;
         float phimin = -phimax;
     
-        if (cameraParameters->phi > phimax)
-            cameraParameters->phi = phimax;
+        if (mouseParameters->rotationAnglePhi > phimax)
+            mouseParameters->rotationAnglePhi = phimax;
     
-        if (cameraParameters->phi < phimin)
-            cameraParameters->phi = phimin;
+        if (mouseParameters->rotationAnglePhi < phimin)
+            mouseParameters->rotationAnglePhi = phimin;
     }
 
     if (mouseParameters->rightButtonPressed)
@@ -152,6 +151,7 @@ void Callbacks::scrollCallback(GLFWwindow* window, double xoffset, double yoffse
 void Callbacks::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mod) {
     Callbacks* callbacks = Callbacks::getInstance();
     PlayerParameters* playerParameters = callbacks->playerParameters;
+    KeyboardParameters* keyboardParameters = callbacks->keyboardParameters;
 
     // Se o usuário pressionar a tecla ESC, fechamos a janela.
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -214,7 +214,56 @@ void Callbacks::keyCallback(GLFWwindow* window, int key, int scancode, int actio
         fprintf(stdout,"Shaders recarregados!\n");
         fflush(stdout);
     }
+
+    if(key == GLFW_KEY_W)
+    {
+        if(action == GLFW_PRESS)
+        {
+            keyboardParameters->upKeyPressed = true;
+        }
+        else if(action == GLFW_RELEASE)
+        {
+            keyboardParameters->upKeyPressed =false;
+        }
+    }
+
+    if(key == GLFW_KEY_S)
+    {
+        if(action == GLFW_PRESS)
+        {
+            keyboardParameters->downKeyPressed = true;
+        }
+        else if(action == GLFW_RELEASE)
+        {
+            keyboardParameters->downKeyPressed =false;
+        }
+    }
+
+    if(key == GLFW_KEY_A)
+    {
+        if(action == GLFW_PRESS)
+        {
+            keyboardParameters->leftKeyPressed = true;
+        }
+        else if(action == GLFW_RELEASE)
+        {
+            keyboardParameters->leftKeyPressed =false;
+        }
+    }
+
+    if(key == GLFW_KEY_D)
+    {
+        if(action == GLFW_PRESS)
+        {
+            keyboardParameters->rightKeyPressed = true;
+        }
+        else if(action == GLFW_RELEASE)
+        {
+            keyboardParameters->rightKeyPressed =false;
+        }
+    }
 }
+
 
 
 void Callbacks::errorCallback(int error, const char* description)
@@ -234,6 +283,10 @@ void Callbacks::setCameraParameters(CameraParameters* cameraParameters) {
 
 void Callbacks::setMouseParameters(MouseParameters* mouseParameters) {
     this->mouseParameters = mouseParameters;
+}
+
+void Callbacks::setKeyboardParameters(KeyboardParameters* keyboardParameters) {
+    this->keyboardParameters = keyboardParameters;
 }
 
 void Callbacks::setPlayerParameters(PlayerParameters* playerParameters) {

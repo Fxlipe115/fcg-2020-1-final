@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include "cameraparameters.h"
+#include "keyboardparameters.h"
 #include "mouseparameters.h"
 #include "playerparameters.h"
 #include "windowparameters.h"
@@ -16,7 +17,9 @@ private:
     WindowParameters* windowParameters;
     CameraParameters* cameraParameters;
     MouseParameters* mouseParameters;
+    KeyboardParameters* keyboardParameters;
     PlayerParameters* playerParameters;
+
 public:
     static Callbacks* getInstance();
     static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -28,6 +31,7 @@ public:
     void setWindowParameters(WindowParameters* windowParameters);
     void setCameraParameters(CameraParameters* cameraParamenters);
     void setMouseParameters(MouseParameters* mouseParameters);
+    void setKeyboardParameters(KeyboardParameters* keyboardParameters);
     void setPlayerParameters(PlayerParameters* playerParameters);
 };
 

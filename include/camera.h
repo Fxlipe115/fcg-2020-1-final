@@ -18,6 +18,13 @@ public:
     glm::vec4 getViewVector();
     glm::vec4 getUpVector();
     glm::mat4 getViewMatrix();
+    virtual bool isFreeCamera() = 0;
+    virtual void moveFront(float speed) = 0;
+    virtual void moveBack(float speed) = 0;
+    virtual void moveLeft(float speed) = 0;
+    virtual void moveRight(float speed) = 0;
+    virtual void moveUp(float speed) = 0;
+    virtual void moveDown(float speed) = 0;
 };
 
 #endif

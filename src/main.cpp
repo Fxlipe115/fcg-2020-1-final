@@ -9,6 +9,8 @@
 #include "callbacks.h"
 #include "camera.h"
 #include "gpuprogram.h"
+#include "keyboardparameters.h"
+#include "lookatcamera.h"
 #include "matrices.h"
 #include "matrixstack.h"
 #include "mouseparameters.h"
@@ -65,6 +67,7 @@ int main(int argc, char* argv[])
 
     // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
     glfwMakeContextCurrent(window);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // Carregamento de todas funções definidas por OpenGL 3.3, utilizando a
     // biblioteca GLAD.
@@ -81,12 +84,14 @@ int main(int argc, char* argv[])
     WindowParameters* windowParameters = new WindowParameters();
     CameraParameters* cameraParameters = new CameraParameters();
     MouseParameters* mouseParameters = new MouseParameters();
+    KeyboardParameters* keyboardParameters = new KeyboardParameters();
     PlayerParameters* playerParameters = new PlayerParameters();
 
     Callbacks* callbacks = Callbacks::getInstance();
     callbacks->setWindowParameters(windowParameters);
     callbacks->setCameraParameters(cameraParameters);
     callbacks->setMouseParameters(mouseParameters);
+    callbacks->setKeyboardParameters(keyboardParameters);
     callbacks->setPlayerParameters(playerParameters);
 
     // Definimos a função de callback que será chamada sempre que a janela for
@@ -110,10 +115,10 @@ int main(int argc, char* argv[])
     Shaders* shaders = new Shaders("./src/shaders/shader_fragment.glsl", "./src/shaders/shader_vertex.glsl");
     GpuProgram* gpuProgram = new GpuProgram(shaders);
     VirtualScene* virtualScene = new VirtualScene();
-    Camera* camera = new Camera(cameraParameters);
+    Camera* camera = new LookAtCamera(cameraParameters);
 
-    ObjectModel* spheremodel = new ObjectModel("./data/sphere.obj");
-    spheremodel->buildTrianglesAndAddToVirtualScene(virtualScene);
+    ObjectModel* shipmodel = new ObjectModel("./data/kuznetsov.obj");
+    shipmodel->buildTrianglesAndAddToVirtualScene(virtualScene);
 
     ObjectModel* playerModel = new ObjectModel("./data/Shrek.obj");
     playerModel->buildTrianglesAndAddToVirtualScene(virtualScene);
@@ -159,16 +164,51 @@ int main(int argc, char* argv[])
         // os shaders de vértice e fragmentos).
         gpuProgram->use();
 
+        ObjectInstance player(playerModel);
+        player.setScale({0.01f, 0.01f, 0.01f});
+        player.setRotation({0.0,mouseParameters->rotationAngleTheta+M_PI,0.0});
+
+        glm::vec4 playerPosition = glm::vec4(playerParameters->position,1.0f);
+        glm::vec4 playerOrientationVector = player.getFrontVector();
+        glm::vec4 upVector   = glm::vec4(0.0f,1.0f,0.0f,0.0f);
+
+        float speed = 0.1f;
+        glm::vec4 vector_w = playerOrientationVector / norm(playerOrientationVector);
+        glm::vec4 vector_u = crossproduct(upVector, vector_w) / norm(crossproduct(upVector, vector_w));
+        if(keyboardParameters->upKeyPressed){
+            playerPosition += vector_w * speed;
+        }
+        if(keyboardParameters->downKeyPressed){
+            playerPosition -= vector_w * speed;
+        }
+        if(keyboardParameters->leftKeyPressed){
+            playerPosition += vector_u * speed;
+        }
+        if(keyboardParameters->rightKeyPressed){
+            playerPosition -= vector_u * speed;
+        }
+        playerParameters->position = glm::vec3(playerPosition);
+
+        player.setTranslation(playerParameters->position);
+
+        cameraParameters->phi = mouseParameters->rotationAnglePhi;
+        cameraParameters->theta = mouseParameters->rotationAngleTheta;
+        cameraParameters->position = playerParameters->position;
+        cameraParameters->position.y += 1;
+
+        if(camera->isFreeCamera()) {
+
+        } else {
+            
+        }
+
         Projection* projection;
 
-        if (g_UsePerspectiveProjection)
-        {
+        if (g_UsePerspectiveProjection) {
             // Projeção Perspectiva.
             // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
             projection = new PerspectiveProjection(camera, windowParameters);
-        }
-        else
-        {
+        } else {
             // Projeção Ortográfica.
             // Para definição dos valores l, r, b, t ("left", "right", "bottom", "top"),
             // PARA PROJEÇÃO ORTOGRÁFICA veja slides 219-224 do documento Aula_09_Projecoes.pdf.
@@ -183,29 +223,18 @@ int main(int argc, char* argv[])
         gpuProgram->specifyViewMatrix(camera->getViewMatrix());
         gpuProgram->specifyProjectionMatrix(projection->generateMatrix());
 
-        // Desenhamos o modelo da esfera
-        ObjectInstance sphere(spheremodel);
-        sphere.setTranslation({-1.0f, 0.0f, 0.0f});
-        sphere.draw(gpuProgram, ShaderFlags::SPHERE);
+        ObjectInstance ship(shipmodel);
+        ship.setTranslation({-1.0f, -0.05f, 0.0f});
+        ship.setScale({0.5, 0.5, 0.5});
+        ship.setRotation(glm::vec3(-1.57, 0.0, 0.0)+playerParameters->rotation);
+        ship.draw(gpuProgram, ShaderFlags::SPHERE);
 
-        // Desenhamos o modelo do coelho
-        ObjectInstance player(playerModel);
-        player.setTranslation({0.0f, -0.8f, 1.0f});
-        player.setScale({0.02f, 0.02f, 0.02f});
-        player.setRotation(playerParameters->rotation);
         player.draw(gpuProgram, ShaderFlags::BUNNY);
 
         ObjectInstance plane(planemodel);
-        plane.setTranslation({0.0f, -1.0f, 0.0f});
+        plane.setTranslation({0.0f, 0.0f, 0.0f});
         plane.setScale({2.0f, 1.0f, 2.0f});
         plane.draw(gpuProgram, ShaderFlags::PLANE);
-
-        // Pegamos um vértice com coordenadas de modelo (0.5, 0.5, 0.5, 1) e o
-        // passamos por todos os sistemas de coordenadas armazenados nas
-        // matrizes the_model, the_view, e the_projection; e escrevemos na tela
-        // as matrizes e pontos resultantes dessas transformações.
-        //glm::vec4 p_model(0.5f, 0.5f, 0.5f, 1.0f);
-        //TextRendering_ShowModelViewProjection(window, projection, view, model, p_model);
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.

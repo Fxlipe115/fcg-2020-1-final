@@ -6,4 +6,6 @@ MouseParameters::MouseParameters() {
     middleButtonPressed = false;
     lastCursorPositionX = 0.0;
     lastCursorPositionY = 0.0;
+    rotationAnglePhi = 0.0;
+    rotationAngleTheta = 0.0;
 }

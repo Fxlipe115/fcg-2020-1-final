@@ -8,6 +8,8 @@ struct MouseParameters {
     bool middleButtonPressed;
     double lastCursorPositionX;
     double lastCursorPositionY;
+    float rotationAngleTheta;
+    float rotationAnglePhi;
 };
 
 #endif

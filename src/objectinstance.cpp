@@ -11,32 +11,39 @@ ObjectInstance::ObjectInstance(ObjectModel* model)
 }
 
 
-void ObjectInstance::setScale(Coordinates scale) {
+void ObjectInstance::setScale(glm::vec3 scale) {
     this->scale = scale;
 }
 
 
-Coordinates ObjectInstance::getScale() {
+glm::vec3 ObjectInstance::getScale() {
     return scale;
 }
 
-void ObjectInstance::setTranslation(Coordinates translation) {
+void ObjectInstance::setTranslation(glm::vec3 translation) {
     this->translation = translation;
 }
 
 
-Coordinates ObjectInstance::getTranslation() {
+glm::vec3 ObjectInstance::getTranslation() {
     return translation;
 }
 
 
-void ObjectInstance::setRotation(Coordinates rotation) {
+void ObjectInstance::setRotation(glm::vec3 rotation) {
     this->rotation = rotation;
 }
 
 
-Coordinates ObjectInstance::getRotation() {
+glm::vec3 ObjectInstance::getRotation() {
     return rotation;
+}
+
+glm::vec4 ObjectInstance::getFrontVector() {
+    glm::vec4 front = glm::vec4(0.0, 0.0, 1.0, 0.0)
+                    * Matrix_Rotate_Y(-rotation.y);
+
+    return front/norm(front);
 }
 
 void ObjectInstance::draw(GpuProgram* gpuProgram, int shaderFlags) {

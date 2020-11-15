@@ -21,16 +21,16 @@ CameraParameters* Camera::getParameters() {
 
 glm::vec4 Camera::getPosition() {
     float r = this->getParameters()->distance;
-    float y = r*sin(this->getParameters()->phi);
-    float z = r*cos(this->getParameters()->phi)*cos(this->getParameters()->theta);
-    float x = r*cos(this->getParameters()->phi)*sin(this->getParameters()->theta);
+    float y = parameters->position.y + r*sin(this->getParameters()->phi);
+    float z = parameters->position.z + r*cos(this->getParameters()->phi)*cos(this->getParameters()->theta);
+    float x = parameters->position.x + r*cos(this->getParameters()->phi)*sin(this->getParameters()->theta);
 
     return glm::vec4(x,y,z,1.0f);
 }
 
 
 glm::vec4 Camera::getViewVector() {
-    glm::vec4 camera_lookat_l    = glm::vec4(0.0f,0.0f,0.0f,1.0f);
+    glm::vec4 camera_lookat_l = glm::vec4(parameters->position, 1.0f);
     return camera_lookat_l - this->getPosition();
 }
 
