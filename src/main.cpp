@@ -8,6 +8,7 @@
 
 #include "callbacks.h"
 #include "camera.h"
+#include "cameracontrol.h"
 #include "freecamera.h"
 #include "gpuprogram.h"
 #include "keyboardparameters.h"
@@ -164,14 +165,9 @@ int main(int argc, char* argv[])
         playerControl.updatePlayerPosition();
         playerControl.updatePlayerOrientation();
 
-        camera->setPhi(mouseParameters->rotationAnglePhi);
-        camera->setTheta(mouseParameters->rotationAngleTheta);
-        // This is done to align the camera with the player's model head
-        glm::vec4 playerHeadPosition = glm::vec4(player.getTranslation(), 0.1);
-        glm::vec4 playerDirection = player.getFrontVector();
-        playerHeadPosition.y += 1;
-        playerHeadPosition += playerDirection * 0.45f;
-        camera->setPosition(playerHeadPosition);
+        CameraControl cameraControl(camera, &player, mouseParameters);
+        cameraControl.updateCameraPosition();
+        cameraControl.updateCameraOrientation();
 
         Projection* projection;
 
