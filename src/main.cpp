@@ -18,6 +18,7 @@
 #include "objectinstance.h"
 #include "orthographicprojection.h"
 #include "perspectiveprojection.h"
+#include "playercontrol.h"
 #include "projection.h"
 #include "shaders.h"
 #include "textrendering.h"
@@ -120,17 +121,14 @@ int main(int argc, char* argv[])
     ObjectModel* shipmodel = new ObjectModel("./data/kuznetsov.obj");
     shipmodel->buildTrianglesAndAddToVirtualScene(virtualScene);
 
-    ObjectModel* playerModel = new ObjectModel("./data/Shrek.obj");
-    playerModel->buildTrianglesAndAddToVirtualScene(virtualScene);
-
     ObjectModel* planemodel = new ObjectModel("./data/plane.obj");
     planemodel->buildTrianglesAndAddToVirtualScene(virtualScene);
 
-    if ( argc > 1 )
-    {
-        ObjectModel* model = new ObjectModel(argv[1]);
-        model->buildTrianglesAndAddToVirtualScene(virtualScene);
-    }
+    ObjectModel* playerModel = new ObjectModel("./data/Shrek.obj");
+    playerModel->buildTrianglesAndAddToVirtualScene(virtualScene);
+
+    ObjectInstance player(playerModel);
+    player.setScale({0.01f, 0.01f, 0.01f});
 
     // Inicializamos o código para renderização de texto.
     TextRendering_Init();
@@ -162,38 +160,15 @@ int main(int argc, char* argv[])
 
         // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
         // os shaders de vértice e fragmentos).
-        gpuProgram->use();
+        gpuProgram->use();    
 
-        ObjectInstance player(playerModel);
-        player.setScale({0.01f, 0.01f, 0.01f});
-        player.setRotation({0.0,mouseParameters->rotationAngleTheta+M_PI,0.0});
-
-        glm::vec4 playerPosition = glm::vec4(playerParameters->position,1.0f);
-        glm::vec4 playerOrientationVector = player.getFrontVector();
-        glm::vec4 upVector   = glm::vec4(0.0f,1.0f,0.0f,0.0f);
-
-        float speed = 0.1f;
-        glm::vec4 vector_w = playerOrientationVector / norm(playerOrientationVector);
-        glm::vec4 vector_u = crossproduct(upVector, vector_w) / norm(crossproduct(upVector, vector_w));
-        if(keyboardParameters->upKeyPressed){
-            playerPosition += vector_w * speed;
-        }
-        if(keyboardParameters->downKeyPressed){
-            playerPosition -= vector_w * speed;
-        }
-        if(keyboardParameters->leftKeyPressed){
-            playerPosition += vector_u * speed;
-        }
-        if(keyboardParameters->rightKeyPressed){
-            playerPosition -= vector_u * speed;
-        }
-        playerParameters->position = glm::vec3(playerPosition);
-
-        player.setTranslation(playerParameters->position);
+        PlayerControl playerControl(&player, keyboardParameters, mouseParameters);
+        playerControl.updatePlayerPosition();
+        playerControl.updatePlayerOrientation();
 
         cameraParameters->phi = mouseParameters->rotationAnglePhi;
         cameraParameters->theta = mouseParameters->rotationAngleTheta;
-        cameraParameters->position = playerParameters->position;
+        cameraParameters->position = player.getTranslation();
         cameraParameters->position.y += 1;
 
         if(camera->isFreeCamera()) {

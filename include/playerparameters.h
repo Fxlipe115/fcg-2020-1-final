@@ -5,7 +5,6 @@
 
 struct PlayerParameters {
     glm::vec3 rotation;
-    glm::vec3 position;
 };
 
 #endif
