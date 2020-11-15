@@ -10,6 +10,10 @@ bool LookAtCamera::isFreeCamera() {
 }
 
 void LookAtCamera::setPosition(glm::vec3 position) {
+    // When you set the camera position in this look-at camera you are
+    // actually setting the look-at point. The actual position of the 
+    // camera is computed below. This is done so that both look-at and 
+    // free camera classes can have the same interface.
     this->lookAtPoint = position;
     float r = distance;
     float y = lookAtPoint.y + r*sin(phi);
