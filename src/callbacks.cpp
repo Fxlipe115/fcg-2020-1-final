@@ -150,43 +150,16 @@ void Callbacks::scrollCallback(GLFWwindow* window, double xoffset, double yoffse
 
 void Callbacks::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mod) {
     Callbacks* callbacks = Callbacks::getInstance();
-    PlayerParameters* playerParameters = callbacks->playerParameters;
     KeyboardParameters* keyboardParameters = callbacks->keyboardParameters;
 
     // Se o usuário pressionar a tecla ESC, fechamos a janela.
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 
-    // O código abaixo implementa a seguinte lógica:
-    //   Se apertar tecla X       então g_AngleX += delta;
-    //   Se apertar tecla shift+X então g_AngleX -= delta;
-    //   Se apertar tecla Y       então g_AngleY += delta;
-    //   Se apertar tecla shift+Y então g_AngleY -= delta;
-    //   Se apertar tecla Z       então g_AngleZ += delta;
-    //   Se apertar tecla shift+Z então g_AngleZ -= delta;
 
-    float delta = 3.141592 / 16; // 22.5 graus, em radianos.
-
-    if (key == GLFW_KEY_X && action == GLFW_PRESS)
-    {
-        playerParameters->rotation.x += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
-    }
-
-    if (key == GLFW_KEY_Y && action == GLFW_PRESS)
-    {
-        playerParameters->rotation.y += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
-    }
-    if (key == GLFW_KEY_Z && action == GLFW_PRESS)
-    {
-        playerParameters->rotation.z += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
-    }
-
-    // Se o usuário apertar a tecla espaço, resetamos os ângulos de Euler para zero.
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
     {
-        playerParameters->rotation.x = 0.0f;
-        playerParameters->rotation.y = 0.0f;
-        playerParameters->rotation.z = 0.0f;
+
     }
 
     // Se o usuário apertar a tecla P, utilizamos projeção perspectiva.
@@ -284,6 +257,3 @@ void Callbacks::setKeyboardParameters(KeyboardParameters* keyboardParameters) {
     this->keyboardParameters = keyboardParameters;
 }
 
-void Callbacks::setPlayerParameters(PlayerParameters* playerParameters) {
-    this->playerParameters = playerParameters;
-}

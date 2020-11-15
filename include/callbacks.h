@@ -6,7 +6,6 @@
 
 #include "keyboardparameters.h"
 #include "mouseparameters.h"
-#include "playerparameters.h"
 #include "windowparameters.h"
 
 class Callbacks {
@@ -16,7 +15,6 @@ private:
     WindowParameters* windowParameters;
     MouseParameters* mouseParameters;
     KeyboardParameters* keyboardParameters;
-    PlayerParameters* playerParameters;
 
 public:
     static Callbacks* getInstance();
@@ -29,7 +27,6 @@ public:
     void setWindowParameters(WindowParameters* windowParameters);
     void setMouseParameters(MouseParameters* mouseParameters);
     void setKeyboardParameters(KeyboardParameters* keyboardParameters);
-    void setPlayerParameters(PlayerParameters* playerParameters);
 };
 
 #endif

@@ -86,13 +86,11 @@ int main(int argc, char* argv[])
     WindowParameters* windowParameters = new WindowParameters();
     MouseParameters* mouseParameters = new MouseParameters();
     KeyboardParameters* keyboardParameters = new KeyboardParameters();
-    PlayerParameters* playerParameters = new PlayerParameters();
 
     Callbacks* callbacks = Callbacks::getInstance();
     callbacks->setWindowParameters(windowParameters);
     callbacks->setMouseParameters(mouseParameters);
     callbacks->setKeyboardParameters(keyboardParameters);
-    callbacks->setPlayerParameters(playerParameters);
 
     // Definimos a função de callback que será chamada sempre que a janela for
     // redimensionada, por consequência alterando o tamanho do "framebuffer"
@@ -199,7 +197,7 @@ int main(int argc, char* argv[])
         ObjectInstance ship(shipmodel);
         ship.setTranslation({-1.0f, -0.05f, 0.0f});
         ship.setScale({0.5, 0.5, 0.5});
-        ship.setRotation(glm::vec3(-1.57, 0.0, 0.0)+playerParameters->rotation);
+        ship.setRotation({-1.57, 0.0, 0.0});
         ship.draw(gpuProgram, ShaderFlags::SPHERE);
 
         player.draw(gpuProgram, ShaderFlags::BUNNY);
@@ -208,12 +206,6 @@ int main(int argc, char* argv[])
         plane.setTranslation({0.0f, 0.0f, 0.0f});
         plane.setScale({2.0f, 1.0f, 2.0f});
         plane.draw(gpuProgram, ShaderFlags::PLANE);
-
-        // Imprimimos na tela os ângulos de Euler que controlam a rotação do
-        // terceiro cubo.
-        TextRendering_ShowEulerAngles(window, playerParameters->rotation.x, 
-                                      playerParameters->rotation.y, 
-                                      playerParameters->rotation.z, g_ShowInfoText);
 
         // Imprimimos na informação sobre a matriz de projeção sendo utilizada.
         TextRendering_ShowProjection(window, g_ShowInfoText, g_UsePerspectiveProjection);
