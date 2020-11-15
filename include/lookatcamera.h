@@ -8,15 +8,12 @@
 class LookAtCamera : public Camera {
     private:
         glm::vec3 lookAtPoint;
+    protected:
+        glm::vec4 getViewVector() override;
+        void setPosition(glm::vec3 position) override;
     public:
-        LookAtCamera(CameraParameters* cameraParameters);
+        LookAtCamera();
         bool isFreeCamera() override;
-        void moveFront(float speed) override;
-        void moveBack(float speed) override;
-        void moveLeft(float speed) override;
-        void moveRight(float speed) override;
-        void moveUp(float speed) override;
-        void moveDown(float speed) override;
 };
 
 #endif

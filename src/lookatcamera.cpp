@@ -1,7 +1,7 @@
 #include "lookatcamera.h"
 
-LookAtCamera::LookAtCamera(CameraParameters* cameraParameters)
- : Camera(cameraParameters)
+LookAtCamera::LookAtCamera()
+ : Camera()
 {
 }
 
@@ -9,26 +9,16 @@ bool LookAtCamera::isFreeCamera() {
     return false;
 }
 
-void LookAtCamera::moveFront(float speed) {
-    
+void LookAtCamera::setPosition(glm::vec3 position) {
+    this->lookAtPoint = position;
+    float r = distance;
+    float y = lookAtPoint.y + r*sin(phi);
+    float z = lookAtPoint.z + r*cos(phi)*cos(theta);
+    float x = lookAtPoint.x + r*cos(phi)*sin(theta);
+    glm::vec4 actualPosition= glm::vec4(x, y, z, 1.0f);
+    this->position = actualPosition;
 }
 
-void LookAtCamera::moveBack(float speed) {
-
-}
-
-void LookAtCamera::moveLeft(float speed) {
-
-}
-
-void LookAtCamera::moveRight(float speed) {
-
-}
-
-void LookAtCamera::moveUp(float speed) {
-
-}
-
-void LookAtCamera::moveDown(float speed) {
-
+glm::vec4 LookAtCamera::getViewVector() {
+    return glm::vec4(lookAtPoint, 1.0f) - this->getPosition();
 }

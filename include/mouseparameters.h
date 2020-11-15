@@ -10,6 +10,7 @@ struct MouseParameters {
     double lastCursorPositionY;
     float rotationAngleTheta;
     float rotationAnglePhi;
+    float wheelOffset;
 };
 
 #endif

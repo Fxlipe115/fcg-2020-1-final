@@ -1,39 +1,62 @@
 #include "camera.h"
 
-#include <stdexcept>
 #include <cmath>
 
 #include "matrices.h"
 
-Camera::Camera(CameraParameters* parameters) 
- : parameters(parameters)
+Camera::Camera() 
+ : theta(0.0f), phi(0.0f), distance(2.0f), 
+   nearPlane(-0.1), farPlane(-50.0f)
 {
-    if(parameters == nullptr){
-        throw std::invalid_argument("Camera parameters must not be null");
-    }
 }
 
-
-CameraParameters* Camera::getParameters() {
-    return parameters;
+float Camera::getTheta() {
+    return theta;
 }
 
+void Camera::setTheta(float theta) {
+    this->theta = theta;
+}
+
+float Camera::getPhi() {
+    return phi;
+}
+
+void Camera::setPhi(float phi) {
+    this->phi = phi;
+}
+
+float Camera::getDistance() {
+    return distance;
+}
+
+void Camera::setDistance(float distance) {
+    this->distance = distance;
+}
+
+float Camera::getNearPlane() {
+    return nearPlane;
+}
+
+void Camera::setNearPlane(float nearPlane) {
+    this->nearPlane = nearPlane;
+}
+
+float Camera::getFarPlane() {
+    return farPlane;
+}
+
+void Camera::setFarPlane(float farPlane) {
+    this->farPlane = farPlane;
+}
+
+void Camera::setPosition(glm::vec3 position) {
+    this->position = position;
+}
 
 glm::vec4 Camera::getPosition() {
-    float r = this->getParameters()->distance;
-    float y = parameters->position.y + r*sin(this->getParameters()->phi);
-    float z = parameters->position.z + r*cos(this->getParameters()->phi)*cos(this->getParameters()->theta);
-    float x = parameters->position.x + r*cos(this->getParameters()->phi)*sin(this->getParameters()->theta);
-
-    return glm::vec4(x,y,z,1.0f);
+    return glm::vec4(position,1.0f);
 }
-
-
-glm::vec4 Camera::getViewVector() {
-    glm::vec4 camera_lookat_l = glm::vec4(parameters->position, 1.0f);
-    return camera_lookat_l - this->getPosition();
-}
-
 
 glm::vec4 Camera::getUpVector() {
     return glm::vec4(0.0f,1.0f,0.0f,0.0f);

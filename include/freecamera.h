@@ -6,15 +6,11 @@
 #include "camera.h"
 
 class FreeCamera : public Camera {
+    protected:
+        glm::vec4 getViewVector() override;
     public:
-        FreeCamera(CameraParameters* cameraParameters);
+        FreeCamera();
         bool isFreeCamera() override;
-        void moveFront(float speed) override;
-        void moveBack(float speed) override;
-        void moveLeft(float speed) override;
-        void moveRight(float speed) override;
-        void moveUp(float speed) override;
-        void moveDown(float speed) override;
 };
 
 #endif

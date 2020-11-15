@@ -4,7 +4,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "cameraparameters.h"
 #include "keyboardparameters.h"
 #include "mouseparameters.h"
 #include "playerparameters.h"
@@ -15,7 +14,6 @@ private:
     Callbacks();
     static Callbacks* instance;
     WindowParameters* windowParameters;
-    CameraParameters* cameraParameters;
     MouseParameters* mouseParameters;
     KeyboardParameters* keyboardParameters;
     PlayerParameters* playerParameters;
@@ -29,7 +27,6 @@ public:
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mod);
     static void errorCallback(int error, const char* description);
     void setWindowParameters(WindowParameters* windowParameters);
-    void setCameraParameters(CameraParameters* cameraParamenters);
     void setMouseParameters(MouseParameters* mouseParameters);
     void setKeyboardParameters(KeyboardParameters* keyboardParameters);
     void setPlayerParameters(PlayerParameters* playerParameters);

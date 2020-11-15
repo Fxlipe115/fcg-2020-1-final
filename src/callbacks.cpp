@@ -131,11 +131,11 @@ void Callbacks::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) 
 
 void Callbacks::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
     Callbacks* callbacks = Callbacks::getInstance();
-    CameraParameters* cameraParameters = callbacks->cameraParameters;
+    MouseParameters* mouse = callbacks->mouseParameters;
 
     // Atualizamos a distância da câmera para a origem utilizando a
     // movimentação da "rodinha", simulando um ZOOM.
-    cameraParameters->distance -= 0.1f*yoffset;
+    mouse->wheelOffset -= 0.1f*yoffset;
 
     // Uma câmera look-at nunca pode estar exatamente "em cima" do ponto para
     // onde ela está olhando, pois isto gera problemas de divisão por zero na
@@ -143,8 +143,8 @@ void Callbacks::scrollCallback(GLFWwindow* window, double xoffset, double yoffse
     // nunca pode ser zero. Versões anteriores deste código possuíam este bug,
     // o qual foi detectado pelo aluno Vinicius Fraga (2017/2).
     const float verysmallnumber = std::numeric_limits<float>::epsilon();
-    if (cameraParameters->distance < verysmallnumber)
-        cameraParameters->distance = verysmallnumber;
+    if (mouse->wheelOffset < verysmallnumber)
+        mouse->wheelOffset = verysmallnumber;
 }
 
 
@@ -274,11 +274,6 @@ void Callbacks::errorCallback(int error, const char* description)
 
 void Callbacks::setWindowParameters(WindowParameters* windowParameters) {
     this->windowParameters = windowParameters;
-}
-
-
-void Callbacks::setCameraParameters(CameraParameters* cameraParameters) {
-    this->cameraParameters = cameraParameters;
 }
 
 void Callbacks::setMouseParameters(MouseParameters* mouseParameters) {

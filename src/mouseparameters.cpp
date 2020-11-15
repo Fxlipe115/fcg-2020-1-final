@@ -8,4 +8,5 @@ MouseParameters::MouseParameters() {
     lastCursorPositionY = 0.0;
     rotationAnglePhi = 0.0;
     rotationAngleTheta = 0.0;
+    wheelOffset = 0.0;
 }

@@ -8,6 +8,7 @@
 
 #include "callbacks.h"
 #include "camera.h"
+#include "freecamera.h"
 #include "gpuprogram.h"
 #include "keyboardparameters.h"
 #include "lookatcamera.h"
@@ -83,14 +84,12 @@ int main(int argc, char* argv[])
     printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
 
     WindowParameters* windowParameters = new WindowParameters();
-    CameraParameters* cameraParameters = new CameraParameters();
     MouseParameters* mouseParameters = new MouseParameters();
     KeyboardParameters* keyboardParameters = new KeyboardParameters();
     PlayerParameters* playerParameters = new PlayerParameters();
 
     Callbacks* callbacks = Callbacks::getInstance();
     callbacks->setWindowParameters(windowParameters);
-    callbacks->setCameraParameters(cameraParameters);
     callbacks->setMouseParameters(mouseParameters);
     callbacks->setKeyboardParameters(keyboardParameters);
     callbacks->setPlayerParameters(playerParameters);
@@ -116,7 +115,7 @@ int main(int argc, char* argv[])
     Shaders* shaders = new Shaders("./src/shaders/shader_fragment.glsl", "./src/shaders/shader_vertex.glsl");
     GpuProgram* gpuProgram = new GpuProgram(shaders);
     VirtualScene* virtualScene = new VirtualScene();
-    Camera* camera = new LookAtCamera(cameraParameters);
+    Camera* camera = new FreeCamera();
 
     ObjectModel* shipmodel = new ObjectModel("./data/kuznetsov.obj");
     shipmodel->buildTrianglesAndAddToVirtualScene(virtualScene);
@@ -129,6 +128,7 @@ int main(int argc, char* argv[])
 
     ObjectInstance player(playerModel);
     player.setScale({0.01f, 0.01f, 0.01f});
+    player.setTranslation({0.0, 0.7, 0.0});
 
     // Inicializamos o código para renderização de texto.
     TextRendering_Init();
@@ -166,16 +166,14 @@ int main(int argc, char* argv[])
         playerControl.updatePlayerPosition();
         playerControl.updatePlayerOrientation();
 
-        cameraParameters->phi = mouseParameters->rotationAnglePhi;
-        cameraParameters->theta = mouseParameters->rotationAngleTheta;
-        cameraParameters->position = player.getTranslation();
-        cameraParameters->position.y += 1;
-
-        if(camera->isFreeCamera()) {
-
-        } else {
-            
-        }
+        camera->setPhi(mouseParameters->rotationAnglePhi);
+        camera->setTheta(mouseParameters->rotationAngleTheta);
+        // This is done to align the camera with the player's model head
+        glm::vec4 playerHeadPosition = glm::vec4(player.getTranslation(), 0.1);
+        glm::vec4 playerDirection = player.getFrontVector();
+        playerHeadPosition.y += 1;
+        playerHeadPosition += playerDirection * 0.45f;
+        camera->setPosition(playerHeadPosition);
 
         Projection* projection;
 
