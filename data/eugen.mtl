@@ -1,0 +1,371 @@
+newmtl m0
+Ka 0 0 0
+Kd 0,7721089 0 0
+Ks 1 1 1
+Ns 0
+d 1
+
+newmtl m1
+Ka 0 0 0
+Kd 0,7193879 0,2948511 0,2948511
+Ks 1 1 1
+Ns 0
+d 1
+
+newmtl m2
+Ka 0 0 0
+Kd 0,9262199 0,9372109 0,9438776
+Ks 1 1 1
+Ns 0
+d 1
+
+newmtl m3
+Ka 0 0 0
+Kd 0,9262199 0,9372109 0,9438776
+Ks 1 1 1
+Ns 0
+d 1
+
+newmtl m4
+Ka 0 0 0
+Kd 0,9262199 0,9372109 0,9438776
+Ks 1 1 1
+Ns 0
+d 1
+
+newmtl m5
+Ka 0 0 0
+Kd 0,9262199 0,9372109 0,9438776
+Ks 1 1 1
+Ns 0
+d 1
+
+newmtl m6
+Ka 0 0 0
+Kd 0,9262199 0,9372109 0,9438776
+Ks 1 1 1
+Ns 0
+d 1
+
+newmtl m7
+Ka 0 0 0
+Kd 0,9262199 0,9372109 0,9438776
+Ks 1 1 1
+Ns 0
+d 1
+
+newmtl m8
+Ka 0 0 0
+Kd 0,9262199 0,9372109 0,9438776
+Ks 1 1 1
+Ns 0
+d 1
+
+newmtl m9
+Ka 0 0 0
+Kd 0,9262199 0,9372109 0,9438776
+Ks 1 1 1
+Ns 0
+d 1
+
+newmtl m10
+map_Kd cf_m_tooth (Instance)_(-484930).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m11
+map_Kd cf_m_face_00.png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m12
+map_Kd cf_m_mayuge_00 (Instance) (Instance)_(-485496).png
+Ka 0 0 0
+Kd 0,6714285 0,5200145 0,3596938
+Ks 1 1 1
+Ns 0
+d 1
+
+newmtl m13
+map_Kd cf_m_noseline_00 (Instance) (Instance)_(-485502).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m14
+map_Kd cf_m_tooth (Instance)_(-484938).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m15
+map_Kd cf_m_eyeline_00_up (Instance) (Instance)_(-485504).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m16
+map_Kd cf_m_eyeline_down (Instance) (Instance)_(-485508).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m17
+map_Kd cf_m_sirome_00 (Instance) (Instance)_(-485492).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m18
+map_Kd cf_m_sirome_00 (Instance) (Instance)_(-485492).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m19
+map_Kd cf_m_hitomi_00 (Instance) (Instance)_(-485480).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m20
+map_Kd cf_m_hitomi_00 (Instance) (Instance)_(-485482).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m21
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m22
+map_Kd armor (Instance) (Instance)_(-493820).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m23
+map_Kd armor (Instance)_(-493564).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m24
+map_Kd armor (Instance)_(-493566).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m25
+map_Kd armor (Instance)_(-493568).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m26
+map_Kd armor (Instance)_(-493570).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m27
+map_Kd armor (Instance)_(-493572).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m28
+map_Kd armor (Instance)_(-493574).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m29
+map_Kd armor (Instance)_(-493576).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m30
+map_Kd armor (Instance)_(-493578).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m31
+map_Kd armor (Instance)_(-493580).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m32
+map_Kd armor (Instance)_(-493582).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m33
+map_Kd armor (Instance)_(-493584).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m34
+map_Kd armor (Instance)_(-493586).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m35
+map_Kd armor (Instance)_(-493588).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m36
+map_Kd armor (Instance)_(-493590).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m37
+map_Kd armor (Instance)_(-493592).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m38
+map_Kd armor (Instance)_(-493594).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m39
+map_Kd armor (Instance)_(-493596).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m40
+map_Kd armor (Instance)_(-493598).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m41
+map_Kd cf_m_body.png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m42
+Ka 1 1 1
+Kd 0 0 0
+Ks 0 0 0
+Ns 0
+d 0
+
+newmtl m43
+map_Kd cf_m_shorts_03 (Instance) (Instance)_(-491262).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m44
+map_Kd Prinz_prime_m (Instance) (Instance)_(-493510).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m45
+map_Kd prinz_prime_m (Instance) (Instance)_(-494782).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m46
+map_Kd Prinz_second_m (Instance)_(-485848).png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
+newmtl m47
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+Ns 0
+d 1
+
