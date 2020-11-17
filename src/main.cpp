@@ -172,23 +172,13 @@ int main(int argc, char* argv[])
         Projection* projection;
 
         if (g_UsePerspectiveProjection) {
-            // Projeção Perspectiva.
-            // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
             projection = new PerspectiveProjection(camera, windowParameters);
         } else {
-            // Projeção Ortográfica.
-            // Para definição dos valores l, r, b, t ("left", "right", "bottom", "top"),
-            // PARA PROJEÇÃO ORTOGRÁFICA veja slides 219-224 do documento Aula_09_Projecoes.pdf.
-            // Para simular um "zoom" ortográfico, computamos o valor de "t"
-            // utilizando a variável g_CameraDistance.
             projection = new OrthographicProjection(camera, windowParameters);
         }
 
-        // Enviamos as matrizes "view" e "projection" para a placa de vídeo
-        // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
-        // efetivamente aplicadas em todos os pontos.
-        gpuProgram->specifyViewMatrix(camera->getViewMatrix());
-        gpuProgram->specifyProjectionMatrix(projection->generateMatrix());
+        gpuProgram->sendViewMatrixToGPU(camera->getViewMatrix());
+        gpuProgram->sendProjectionMatrixToGPU(projection->generateMatrix());
 
         ObjectInstance ship(shipmodel);
         ship.setTranslation({-1.0f, -0.05f, 0.0f});

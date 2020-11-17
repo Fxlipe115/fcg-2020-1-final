@@ -80,22 +80,22 @@ void GpuProgram::use() {
 }
 
 
-void GpuProgram::specifyModelMatrix(glm::mat4 modelMatrix) {
+void GpuProgram::sendModelMatrixToGPU(glm::mat4 modelMatrix) {
     glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(modelMatrix));
 }
 
 
-void GpuProgram::specifyViewMatrix(glm::mat4 viewMatrix) {
+void GpuProgram::sendViewMatrixToGPU(glm::mat4 viewMatrix) {
     glUniformMatrix4fv(view_uniform , 1 , GL_FALSE , glm::value_ptr(viewMatrix));
         
 }
 
 
-void GpuProgram::specifyProjectionMatrix(glm::mat4 projectionMatrix) {
+void GpuProgram::sendProjectionMatrixToGPU(glm::mat4 projectionMatrix) {
     glUniformMatrix4fv(projection_uniform , 1 , GL_FALSE , glm::value_ptr(projectionMatrix));
 }
 
 
-void GpuProgram::specifyShaderFlags(int shaderFlags) {
+void GpuProgram::sendShaderFlagsToGPU(int shaderFlags) {
     glUniform1i(shader_flags_uniform, shaderFlags);
 }

@@ -19,10 +19,10 @@ class GpuProgram {
         GpuProgram(Shaders* shaders);
         static GLuint createGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id);
         void use();
-        void specifyModelMatrix(glm::mat4 modelMatrix);
-        void specifyViewMatrix(glm::mat4 viewMatrix);
-        void specifyProjectionMatrix(glm::mat4 projectionMatrix);
-        void specifyShaderFlags(int shaderFlags);
+        void sendModelMatrixToGPU(glm::mat4 modelMatrix);
+        void sendViewMatrixToGPU(glm::mat4 viewMatrix);
+        void sendProjectionMatrixToGPU(glm::mat4 projectionMatrix);
+        void sendShaderFlagsToGPU(int shaderFlags);
 };
 
 #endif
