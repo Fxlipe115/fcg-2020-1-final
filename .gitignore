@@ -4,5 +4,5 @@ main
 *.o
 
 .vscode/
-Laboratorio_2.depend
-Laboratorio_2.layout
+*.depend
+*.layout
