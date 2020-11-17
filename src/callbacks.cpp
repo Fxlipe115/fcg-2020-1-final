@@ -16,8 +16,7 @@ Callbacks* Callbacks::getInstance() {
 Callbacks::Callbacks() {
 }
 
-void Callbacks::framebufferSizeCallback(GLFWwindow* window, int width, int height)
-{
+void Callbacks::framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     Callbacks* callbacks = Callbacks::getInstance();
     WindowParameters* windowParameters = callbacks->windowParameters;
 
@@ -38,24 +37,20 @@ void Callbacks::framebufferSizeCallback(GLFWwindow* window, int width, int heigh
 }
 
 
-void Callbacks::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
-{
+void Callbacks::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     Callbacks* callbacks = Callbacks::getInstance();
     MouseParameters* mouseParameters = callbacks->mouseParameters;
 
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-    {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         glfwGetCursorPos(window, &mouseParameters->lastCursorPositionX, &mouseParameters->lastCursorPositionY);
         mouseParameters->leftButtonPressed = true;
     }
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
-    {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
         // Quando o usuário soltar o botão esquerdo do mouse, atualizamos a
         // variável abaixo para false.
         mouseParameters->leftButtonPressed = false;
     }
-    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
-    {
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
         // Se o usuário pressionou o botão esquerdo do mouse, guardamos a
         // posição atual do cursor nas variáveis g_LastCursorPosX e
         // g_LastCursorPosY.  Também, setamos a variável
@@ -64,14 +59,12 @@ void Callbacks::mouseButtonCallback(GLFWwindow* window, int button, int action, 
         glfwGetCursorPos(window, &mouseParameters->lastCursorPositionX, &mouseParameters->lastCursorPositionY);
         mouseParameters->rightButtonPressed = true;
     }
-    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
-    {
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
         // Quando o usuário soltar o botão esquerdo do mouse, atualizamos a
         // variável abaixo para false.
         mouseParameters->rightButtonPressed = false;
     }
-    if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS)
-    {
+    if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS) {
         // Se o usuário pressionou o botão esquerdo do mouse, guardamos a
         // posição atual do cursor nas variáveis g_LastCursorPosX e
         // g_LastCursorPosY.  Também, setamos a variável
@@ -80,8 +73,7 @@ void Callbacks::mouseButtonCallback(GLFWwindow* window, int button, int action, 
         glfwGetCursorPos(window, &mouseParameters->lastCursorPositionX, &mouseParameters->lastCursorPositionY);
         mouseParameters->middleButtonPressed = true;
     }
-    if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_RELEASE)
-    {
+    if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_RELEASE) {
         // Quando o usuário soltar o botão esquerdo do mouse, atualizamos a
         // variável abaixo para false.
         mouseParameters->middleButtonPressed = false;
@@ -97,8 +89,7 @@ void Callbacks::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) 
     float dy = ypos - mouseParameters->lastCursorPositionY;
 
 
-    if (mouseParameters->leftButtonPressed)
-    {
+    if (mouseParameters->leftButtonPressed) {
         // Atualizamos parâmetros da câmera com os deslocamentos
         mouseParameters->rotationAngleTheta -= 0.01f*dx;
         mouseParameters->rotationAnglePhi += 0.01f*dy;
@@ -114,14 +105,12 @@ void Callbacks::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) 
             mouseParameters->rotationAnglePhi = phimin;
     }
 
-    if (mouseParameters->rightButtonPressed)
-    {
+    if (mouseParameters->rightButtonPressed) {
         // Do something
     }
 
-    if (mouseParameters->middleButtonPressed)
-    {
-        // Do something
+    if (mouseParameters->middleButtonPressed) {
+         // Do something
     }
 
     mouseParameters->lastCursorPositionX = xpos;
@@ -153,85 +142,68 @@ void Callbacks::keyCallback(GLFWwindow* window, int key, int scancode, int actio
     KeyboardParameters* keyboardParameters = callbacks->keyboardParameters;
 
     // Se o usuário pressionar a tecla ESC, fechamos a janela.
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+        keyboardParameters->pressedSwitches.push_back(SwitchKeys::ESC_SWITCH_KEY);
         glfwSetWindowShouldClose(window, GL_TRUE);
+    }
 
 
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-    {
-
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+        keyboardParameters->pressedSwitches.push_back(SwitchKeys::SPACE_SWITCH_KEY);
     }
 
     // Se o usuário apertar a tecla P, utilizamos projeção perspectiva.
-    if (key == GLFW_KEY_P && action == GLFW_PRESS)
-    {
-        //g_UsePerspectiveProjection = true;
+    if (key == GLFW_KEY_P && action == GLFW_PRESS) {
+        keyboardParameters->pressedSwitches.push_back(SwitchKeys::P_SWITCH_KEY);
     }
 
     // Se o usuário apertar a tecla O, utilizamos projeção ortográfica.
-    if (key == GLFW_KEY_O && action == GLFW_PRESS)
-    {
-        //g_UsePerspectiveProjection = false;
+    if (key == GLFW_KEY_O && action == GLFW_PRESS) {
+        keyboardParameters->pressedSwitches.push_back(SwitchKeys::O_SWITCH_KEY);
     }
 
     // Se o usuário apertar a tecla H, fazemos um "toggle" do texto informativo mostrado na tela.
-    if (key == GLFW_KEY_H && action == GLFW_PRESS)
-    {
-        //g_ShowInfoText = !g_ShowInfoText;
+    if (key == GLFW_KEY_H && action == GLFW_PRESS) {
+        keyboardParameters->pressedSwitches.push_back(SwitchKeys::H_SWITCH_KEY);
     }
 
     // Se o usuário apertar a tecla R, recarregamos os shaders dos arquivos "shader_fragment.glsl" e "shader_vertex.glsl".
-    if (key == GLFW_KEY_R && action == GLFW_PRESS)
-    {
-        //LoadShadersFromFiles();
-        fprintf(stdout,"Shaders recarregados!\n");
-        fflush(stdout);
+    if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+        keyboardParameters->pressedSwitches.push_back(SwitchKeys::R_SWITCH_KEY);
     }
 
-    if(key == GLFW_KEY_W)
-    {
-        if(action == GLFW_PRESS)
-        {
+    if(key == GLFW_KEY_W) {
+        if(action == GLFW_PRESS) {
             keyboardParameters->upKeyPressed = true;
         }
-        else if(action == GLFW_RELEASE)
-        {
+        else if(action == GLFW_RELEASE) {
             keyboardParameters->upKeyPressed =false;
         }
     }
 
-    if(key == GLFW_KEY_S)
-    {
-        if(action == GLFW_PRESS)
-        {
+    if(key == GLFW_KEY_S) {
+        if(action == GLFW_PRESS) {
             keyboardParameters->downKeyPressed = true;
         }
-        else if(action == GLFW_RELEASE)
-        {
+        else if(action == GLFW_RELEASE) {
             keyboardParameters->downKeyPressed =false;
         }
     }
 
-    if(key == GLFW_KEY_A)
-    {
-        if(action == GLFW_PRESS)
-        {
+    if(key == GLFW_KEY_A) {
+        if(action == GLFW_PRESS) {
             keyboardParameters->leftKeyPressed = true;
         }
-        else if(action == GLFW_RELEASE)
-        {
+        else if(action == GLFW_RELEASE) {
             keyboardParameters->leftKeyPressed =false;
         }
     }
 
-    if(key == GLFW_KEY_D)
-    {
-        if(action == GLFW_PRESS)
-        {
+    if(key == GLFW_KEY_D) {
+        if(action == GLFW_PRESS) {
             keyboardParameters->rightKeyPressed = true;
         }
-        else if(action == GLFW_RELEASE)
-        {
+        else if(action == GLFW_RELEASE) {
             keyboardParameters->rightKeyPressed =false;
         }
     }
@@ -239,8 +211,7 @@ void Callbacks::keyCallback(GLFWwindow* window, int key, int scancode, int actio
 
 
 
-void Callbacks::errorCallback(int error, const char* description)
-{
+void Callbacks::errorCallback(int error, const char* description) {
     fprintf(stderr, "ERROR: GLFW: %s\n", description);
 }
 
