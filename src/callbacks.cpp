@@ -153,43 +153,37 @@ void Callbacks::keyCallback(GLFWwindow* window, int key, int scancode, int actio
     KeyboardParameters* keyboardParameters = callbacks->keyboardParameters;
 
     // Se o usuário pressionar a tecla ESC, fechamos a janela.
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+        keyboardParameters->pressedSwitches.push_back(SwitchKeys::ESC_SWITCH_KEY);
         glfwSetWindowShouldClose(window, GL_TRUE);
+    }
 
 
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-    {
-
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+        keyboardParameters->pressedSwitches.push_back(SwitchKeys::SPACE_SWITCH_KEY);
     }
 
     // Se o usuário apertar a tecla P, utilizamos projeção perspectiva.
-    if (key == GLFW_KEY_P && action == GLFW_PRESS)
-    {
-        //g_UsePerspectiveProjection = true;
+    if (key == GLFW_KEY_P && action == GLFW_PRESS) {
+        keyboardParameters->pressedSwitches.push_back(SwitchKeys::P_SWITCH_KEY);
     }
 
     // Se o usuário apertar a tecla O, utilizamos projeção ortográfica.
-    if (key == GLFW_KEY_O && action == GLFW_PRESS)
-    {
-        //g_UsePerspectiveProjection = false;
+    if (key == GLFW_KEY_O && action == GLFW_PRESS) {
+        keyboardParameters->pressedSwitches.push_back(SwitchKeys::O_SWITCH_KEY);
     }
 
     // Se o usuário apertar a tecla H, fazemos um "toggle" do texto informativo mostrado na tela.
-    if (key == GLFW_KEY_H && action == GLFW_PRESS)
-    {
-        //g_ShowInfoText = !g_ShowInfoText;
+    if (key == GLFW_KEY_H && action == GLFW_PRESS) {
+        keyboardParameters->pressedSwitches.push_back(SwitchKeys::H_SWITCH_KEY);
     }
 
     // Se o usuário apertar a tecla R, recarregamos os shaders dos arquivos "shader_fragment.glsl" e "shader_vertex.glsl".
-    if (key == GLFW_KEY_R && action == GLFW_PRESS)
-    {
-        //LoadShadersFromFiles();
-        fprintf(stdout,"Shaders recarregados!\n");
-        fflush(stdout);
+    if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+        keyboardParameters->pressedSwitches.push_back(SwitchKeys::R_SWITCH_KEY);
     }
 
-    if(key == GLFW_KEY_W)
-    {
+    if(key == GLFW_KEY_W) {
         if(action == GLFW_PRESS)
         {
             keyboardParameters->upKeyPressed = true;
