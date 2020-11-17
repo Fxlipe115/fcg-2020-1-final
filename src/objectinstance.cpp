@@ -49,8 +49,8 @@ glm::vec4 ObjectInstance::getFrontVector() {
 void ObjectInstance::draw(GpuProgram* gpuProgram, int shaderFlags) {
     glm::mat4 transformationMatrix = this->transformationMatrix();
         
-    gpuProgram->specifyModelMatrix(transformationMatrix);
-    gpuProgram->specifyShaderFlags(shaderFlags);
+    gpuProgram->sendModelMatrixToGPU(transformationMatrix);
+    gpuProgram->sendShaderFlagsToGPU(shaderFlags);
     model->draw();
 }
 
