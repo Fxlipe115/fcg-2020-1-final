@@ -7,32 +7,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "callbacks.h"
-#include "camera.h"
-#include "cameracontrol.h"
-#include "freecamera.h"
-#include "gpuprogram.h"
-#include "keyboardparameters.h"
-#include "lookatcamera.h"
-#include "matrices.h"
-#include "matrixstack.h"
-#include "mouseparameters.h"
-#include "objectmodel.h"
-#include "objectinstance.h"
-#include "orthographicprojection.h"
-#include "perspectiveprojection.h"
-#include "playercontrol.h"
-#include "projection.h"
-#include "shaders.h"
+#include "gamecontrol.h"
 #include "textrendering.h"
 #include "utils.h"
-#include "virtualscene.h"
-#include "windowparameters.h"
-
-// Variável que controla o tipo de projeção utilizada: perspectiva ou ortográfica.
-bool g_UsePerspectiveProjection = true;
-
-// Variável que controla se o texto informativo será mostrado na tela.
-bool g_ShowInfoText = true;
 
 int main(int argc, char* argv[])
 {
@@ -111,24 +88,6 @@ int main(int argc, char* argv[])
     // ... ou rolar a "rodinha" do mouse.
     glfwSetScrollCallback(window, Callbacks::scrollCallback);
 
-    Shaders* shaders = new Shaders("./src/shaders/shader_fragment.glsl", "./src/shaders/shader_vertex.glsl");
-    GpuProgram* gpuProgram = new GpuProgram(shaders);
-    VirtualScene* virtualScene = new VirtualScene();
-    Camera* camera = new FreeCamera();
-
-    ObjectModel* shipmodel = new ObjectModel("./data/kuznetsov.obj");
-    shipmodel->buildTrianglesAndAddToVirtualScene(virtualScene);
-
-    ObjectModel* planemodel = new ObjectModel("./data/plane.obj");
-    planemodel->buildTrianglesAndAddToVirtualScene(virtualScene);
-
-    ObjectModel* playerModel = new ObjectModel("./data/Shrek.obj");
-    playerModel->buildTrianglesAndAddToVirtualScene(virtualScene);
-
-    ObjectInstance player(playerModel);
-    player.setScale({0.01f, 0.01f, 0.01f});
-    player.setTranslation({0.0, 0.7, 0.0});
-
     // Inicializamos o código para renderização de texto.
     TextRendering_Init();
 
@@ -140,9 +99,10 @@ int main(int argc, char* argv[])
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
+    GameControl gameControl;
+
     // Ficamos em loop, renderizando, até que o usuário feche a janela
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         // Aqui executamos as operações de renderização
 
         // Definimos a cor do "fundo" do framebuffer como branco.  Tal cor é
@@ -157,48 +117,11 @@ int main(int argc, char* argv[])
         // e também resetamos todos os pixels do Z-buffer (depth buffer).
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
-        // os shaders de vértice e fragmentos).
-        gpuProgram->use();    
-
-        PlayerControl playerControl(&player, keyboardParameters, mouseParameters);
-        playerControl.updatePlayerPosition();
-        playerControl.updatePlayerOrientation();
-
-        CameraControl cameraControl(camera, &player, mouseParameters);
-        cameraControl.updateCameraPosition();
-        cameraControl.updateCameraOrientation();
-
-        Projection* projection;
-
-        if (g_UsePerspectiveProjection) {
-            projection = new PerspectiveProjection(camera, windowParameters);
-        } else {
-            projection = new OrthographicProjection(camera, windowParameters);
-        }
-
-        gpuProgram->sendViewMatrixToGPU(camera->getViewMatrix());
-        gpuProgram->sendProjectionMatrixToGPU(projection->generateMatrix());
-
-        ObjectInstance ship(shipmodel);
-        ship.setTranslation({-1.0f, -0.05f, 0.0f});
-        ship.setScale({0.5, 0.5, 0.5});
-        ship.setRotation({-1.57, 0.0, 0.0});
-        ship.draw(gpuProgram, ShaderFlags::SPHERE);
-
-        player.draw(gpuProgram, ShaderFlags::BUNNY);
-
-        ObjectInstance plane(planemodel);
-        plane.setTranslation({0.0f, 0.0f, 0.0f});
-        plane.setScale({2.0f, 1.0f, 2.0f});
-        plane.draw(gpuProgram, ShaderFlags::PLANE);
-
-        // Imprimimos na informação sobre a matriz de projeção sendo utilizada.
-        TextRendering_ShowProjection(window, g_ShowInfoText, g_UsePerspectiveProjection);
+        gameControl.updateGameState();
 
         // Imprimimos na tela informação sobre o número de quadros renderizados
         // por segundo (frames per second).
-        TextRendering_ShowFramesPerSecond(window, g_ShowInfoText);
+        TextRendering_ShowFramesPerSecond(window, true);
 
         // O framebuffer onde OpenGL executa as operações de renderização não
         // é o mesmo que está sendo mostrado para o usuário, caso contrário
