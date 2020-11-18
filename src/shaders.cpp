@@ -7,7 +7,9 @@
 
 #include "gpuprogram.h"
 
-Shaders::Shaders(const char* fragment_shader_path, const char* vertex_shader_path) {
+Shaders::Shaders(const char* fragment_shader_path, const char* vertex_shader_path)
+ : fragmentShaderPath(fragment_shader_path), vertexShaderPath(vertex_shader_path)
+{
     this->loadShadersFromFiles(fragment_shader_path, vertex_shader_path);
 }
 
@@ -125,4 +127,8 @@ void Shaders::loadShader(const char* filename, GLuint shader_id) {
 
     // A chamada "delete" em C++ é equivalente ao "free()" do C
     delete [] log;
+}
+
+void Shaders::reload() {
+    this->loadShadersFromFiles(fragmentShaderPath.c_str(), vertexShaderPath.c_str());
 }

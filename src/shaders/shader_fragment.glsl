@@ -36,6 +36,9 @@ uniform sampler2D TextureImage2;
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec3 color;
 
+#define M_PI   3.14159265358979323846
+#define M_PI_2 1.57079632679489661923
+
 void main()
 {
     // Obtemos a posição da câmera utilizando a inversa da matriz que define o
@@ -85,12 +88,24 @@ void main()
         Ka = vec3(0.4,0.2,0.04);
         q = 1.0;
 
+
+        float U = -0.02 + texcoords.x*1.05;
+        float V = -2.03 + texcoords.y*4.1;
+        float mid = 0.5;
+        float rotation = M_PI;
+        vec2 coord = vec2(
+            cos(rotation) * (U - mid) + sin(rotation) * (V - mid) + mid,
+            cos(rotation) * (V - mid) - sin(rotation) * (U - mid) + mid
+        );
+        //coord = vec2(U,V);
+        coord.y = 1 - coord.y;
+        Kd0 = texture(TextureImage0, coord).rgb;
     }
 
     if((shader_flags & BUNNY) != 0) {
         // PREENCHA AQUI
         // Propriedades espectrais do coelho
-        Kd = vec3(0.08,0.4,0.8);
+        Kd = vec3(0.08,0.8,0.4);
         Ks = vec3(0.8,0.8,0.8);
         Ka = vec3(0.4,0.4,0.4);
         q = 32.0;
@@ -133,7 +148,7 @@ void main()
     // color = (dot(normalize(p-spotlight), normalize(spotlight_v)) < cos(0.523599f)) ?
     //         ambient_term :
     //         lambert_diffuse_term + ambient_term + phong_specular_term;
-    color = lambert_diffuse_term + ambient_term + phong_specular_term;
+    color = Kd0 + lambert_diffuse_term + ambient_term + phong_specular_term;
 
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas

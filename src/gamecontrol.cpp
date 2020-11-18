@@ -101,4 +101,20 @@ void GameControl::updateGameState() {
     if(currentWave >= waves.size()) {
         gameOver = true;
     }
+
+    for(SwitchKeys key : keyboardParameters->pressedSwitches) {
+        switch (key) {
+        case SwitchKeys::R_SWITCH_KEY:
+            shaders->reload();
+            delete gpuProgram;
+            gpuProgram = new GpuProgram(shaders);
+            fprintf(stdout,"Shaders recarregados!\n");
+            fflush(stdout);
+            break;
+        
+        default:
+            break;
+        }
+    }
+    keyboardParameters->pressedSwitches.clear();
 }
