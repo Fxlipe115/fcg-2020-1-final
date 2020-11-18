@@ -19,7 +19,7 @@ uniform mat4 view;
 uniform mat4 projection;
 
 // Identificador que define qual objeto está sendo desenhado no momento
-#define SPHERE 1
+#define CARRIER 1
 #define BUNNY  2
 #define PLANE  4
 uniform int shader_flags;
@@ -80,7 +80,7 @@ void main()
     // Coordenadas de textura U e V
     float U = 0.0;
     float V = 0.0;
-    if((shader_flags & SPHERE) != 0) {
+    if((shader_flags & CARRIER) != 0) {
         // PREENCHA AQUI
         // Propriedades espectrais da esfera
         Kd = vec3(1.0,1.0,1.0);

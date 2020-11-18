@@ -7,7 +7,7 @@ Wave::Wave(std::list<Actor>& enemies)
 
 void Wave::drawEnemies(GpuProgram* gpuProgram) {
     for(Actor enemy : enemies) {
-        enemy.getObjectInstance()->draw(gpuProgram, ShaderFlags::SPHERE);
+        enemy.getObjectInstance()->draw(gpuProgram, ShaderFlags::CARRIER);
     }
 }
 
