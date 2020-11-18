@@ -1,13 +1,15 @@
 #include "gamecontrol.h"
 
 GameControl::GameControl()
- : usePerspectiveProjection(true), showInfoText(true),
-   camera(nullptr), projection(nullptr), currentWave(0),
-   gameOver(false)
+ : usePerspectiveProjection(true), useFreeCamera(false),
+   showInfoText(true), camera(nullptr), projection(nullptr), 
+   currentWave(0), gameOver(false)
 {
     shaders = new Shaders("./src/shaders/shader_fragment.glsl", "./src/shaders/shader_vertex.glsl");
     gpuProgram = new GpuProgram(shaders);
     virtualScene = new VirtualScene();
+    textures = new Textures();
+    textures->loadTextureImage("./data/aircraftdeck.jpg");
 
     windowParameters = new WindowParameters();
     mouseParameters = new MouseParameters();
@@ -34,8 +36,8 @@ GameControl::GameControl()
     std::list<Actor> wave0list;
     for(int i = 0; i < 5; i++) {    
         ObjectInstance* ship = new ObjectInstance(shipModel);
-        ship->setTranslation({-1.0f+i*2, -0.05f, (i%2)*2.0f});
-        ship->setScale({0.5, 0.5, 0.5});
+        ship->setTranslation({-1.0f+i*4, -0.05f, (i%2)*2.0f});
+        ship->setScale({1.0, 1.0, 1.0});
         ship->setRotation({-1.57, 0.0, 0.0});
 
         wave0list.push_back(Actor(ship, 200));
@@ -68,12 +70,10 @@ void GameControl::updateGameState() {
     }
 
     PlayerControl playerControl(player, keyboardParameters, mouseParameters);
-    playerControl.updatePlayerPosition();
-    playerControl.updatePlayerOrientation();
+    playerControl.updatePlayer();
 
     CameraControl cameraControl(camera, player, mouseParameters);
-    cameraControl.updateCameraPosition();
-    cameraControl.updateCameraOrientation();
+    cameraControl.updateCamera();
 
     delete projection;
     if (usePerspectiveProjection) {

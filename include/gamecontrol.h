@@ -16,6 +16,7 @@
 #include "playercontrol.h"
 #include "projection.h"
 #include "shaders.h"
+#include "textures.h"
 #include "virtualscene.h"
 #include "windowparameters.h"
 #include "wave.h"
@@ -28,6 +29,7 @@ class GameControl {
         Shaders* shaders;
         GpuProgram* gpuProgram;
         VirtualScene* virtualScene;
+        Textures* textures;
         Camera* camera;
         Projection* projection;
         WindowParameters* windowParameters;

@@ -22,7 +22,7 @@ class ObjectModel {
         ObjectModel(const char* filename, const char* basepath = NULL, bool triangulate = true);
         void buildTrianglesAndAddToVirtualScene(VirtualScene* virtualScene);
         void printObjectModelInfo();
-        void draw();
+        void draw(GpuProgram* gpuProgram);
 };
 
 #endif

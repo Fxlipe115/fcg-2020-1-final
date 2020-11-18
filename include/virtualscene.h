@@ -5,6 +5,7 @@
 #include <string>
 
 #include "sceneobject.h"
+#include "gpuprogram.h"
 
 class VirtualScene
 {
@@ -12,7 +13,7 @@ class VirtualScene
         std::map<std::string, SceneObject> scene;
     public:
         void addSceneObject(const SceneObject& object);
-        void drawObject(const char* object_name);
+        void drawObject(const char* object_name, GpuProgram* gpuProgram);
 };
 
 #endif

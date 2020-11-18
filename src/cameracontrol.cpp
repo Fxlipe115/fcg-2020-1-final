@@ -20,3 +20,7 @@ void CameraControl::updateCameraOrientation() {
     camera->setTheta(mouse->rotationAngleTheta);
 }
 
+void CameraControl::updateCamera() {
+    updateCameraOrientation();
+    updateCameraPosition();
+}

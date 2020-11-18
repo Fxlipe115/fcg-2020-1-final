@@ -7,6 +7,12 @@
 in vec4 position_world;
 in vec4 normal;
 
+// Posição do vértice atual no sistema de coordenadas local do modelo.
+in vec4 position_model;
+
+// Coordenadas de textura obtidas do arquivo OBJ (se existirem!)
+in vec2 texcoords;
+
 // Matrizes computadas no código C++ e enviadas para a GPU
 uniform mat4 model;
 uniform mat4 view;
@@ -17,6 +23,15 @@ uniform mat4 projection;
 #define BUNNY  2
 #define PLANE  4
 uniform int shader_flags;
+
+// Parâmetros da axis-aligned bounding box (AABB) do modelo
+uniform vec4 bbox_min;
+uniform vec4 bbox_max;
+
+// Variáveis para acesso das imagens de textura
+uniform sampler2D TextureImage0;
+uniform sampler2D TextureImage1;
+uniform sampler2D TextureImage2;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec3 color;
@@ -57,7 +72,11 @@ void main()
     vec3 Ks; // Refletância especular
     vec3 Ka; // Refletância ambiente
     float q; // Expoente especular para o modelo de iluminação de Phong
+    vec3 Kd0 = vec3(0.0, 0.0, 0.0);
 
+    // Coordenadas de textura U e V
+    float U = 0.0;
+    float V = 0.0;
     if((shader_flags & SPHERE) != 0) {
         // PREENCHA AQUI
         // Propriedades espectrais da esfera
@@ -65,6 +84,7 @@ void main()
         Ks = vec3(0.8,0.4,0.08);
         Ka = vec3(0.4,0.2,0.04);
         q = 1.0;
+
     }
 
     if((shader_flags & BUNNY) != 0) {
@@ -110,12 +130,12 @@ void main()
 
     // Cor final do fragmento calculada com uma combinação dos termos difuso,
     // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
-    color = (dot(normalize(p-spotlight), normalize(spotlight_v)) < cos(0.523599f)) ?
-            ambient_term :
-            lambert_diffuse_term + ambient_term + phong_specular_term;
+    // color = (dot(normalize(p-spotlight), normalize(spotlight_v)) < cos(0.523599f)) ?
+    //         ambient_term :
+    //         lambert_diffuse_term + ambient_term + phong_specular_term;
+    color = lambert_diffuse_term + ambient_term + phong_specular_term;
 
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
     color = pow(color, vec3(1.0,1.0,1.0)/2.2);
 }
-

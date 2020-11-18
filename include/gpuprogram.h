@@ -23,6 +23,8 @@ class GpuProgram {
         void sendViewMatrixToGPU(glm::mat4 viewMatrix);
         void sendProjectionMatrixToGPU(glm::mat4 projectionMatrix);
         void sendShaderFlagsToGPU(int shaderFlags);
+        GLint bbox_min_uniform;
+        GLint bbox_max_uniform;
 };
 
 #endif

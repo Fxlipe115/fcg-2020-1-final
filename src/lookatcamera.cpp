@@ -22,7 +22,7 @@ void LookAtCamera::setPosition(glm::vec3 position) {
     float y = lookAtPoint.y + r*sin(phi);
     float z = lookAtPoint.z + r*cos(phi)*cos(theta);
     float x = lookAtPoint.x + r*cos(phi)*sin(theta);
-    glm::vec4 actualPosition= glm::vec4(x, y, z, 1.0f);
+    glm::vec4 actualPosition = glm::vec4(x, y, z, 1.0f);
     this->position = actualPosition;
 }
 

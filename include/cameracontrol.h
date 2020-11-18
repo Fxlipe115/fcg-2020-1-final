@@ -10,10 +10,11 @@ class CameraControl {
         Camera* camera;
         ObjectInstance* player;
         MouseParameters* mouse;
-    public:
-        CameraControl(Camera* camera, ObjectInstance* player, MouseParameters* mouse);
         void updateCameraPosition();
         void updateCameraOrientation();
+    public:
+        CameraControl(Camera* camera, ObjectInstance* player, MouseParameters* mouse);
+        void updateCamera();
 };
 
 #endif

@@ -51,7 +51,7 @@ void ObjectInstance::draw(GpuProgram* gpuProgram, int shaderFlags) {
         
     gpuProgram->sendModelMatrixToGPU(transformationMatrix);
     gpuProgram->sendShaderFlagsToGPU(shaderFlags);
-    model->draw();
+    model->draw(gpuProgram);
 }
 
 glm::mat4 ObjectInstance::transformationMatrix() {

@@ -35,3 +35,8 @@ void PlayerControl::updatePlayerPosition() {
 void PlayerControl::updatePlayerOrientation() {
     player->setRotation({0.0, mouse->rotationAngleTheta+M_PI,0.0});
 }
+
+void PlayerControl::updatePlayer() {
+    updatePlayerOrientation();
+    updatePlayerPosition();
+}

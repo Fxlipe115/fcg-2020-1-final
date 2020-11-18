@@ -10,10 +10,11 @@ class PlayerControl {
         ObjectInstance* player;
         KeyboardParameters* keyboard;
         MouseParameters* mouse;
-    public:
-        PlayerControl(ObjectInstance* player, KeyboardParameters* keyboard, MouseParameters* mouse);
         void updatePlayerPosition();
         void updatePlayerOrientation();
+    public:
+        PlayerControl(ObjectInstance* player, KeyboardParameters* keyboard, MouseParameters* mouse);
+        void updatePlayer();
 };
 
 #endif

@@ -104,6 +104,12 @@ void ObjectModel::buildTrianglesAndAddToVirtualScene(VirtualScene* virtualScene)
         size_t first_index = indices.size();
         size_t num_triangles = this->shapes[shape].mesh.num_face_vertices.size();
 
+        const float minval = std::numeric_limits<float>::min();
+        const float maxval = std::numeric_limits<float>::max();
+
+        glm::vec3 bbox_min = glm::vec3(maxval,maxval,maxval);
+        glm::vec3 bbox_max = glm::vec3(minval,minval,minval);
+
         for (size_t triangle = 0; triangle < num_triangles; ++triangle)
         {
             assert(this->shapes[shape].mesh.num_face_vertices[triangle] == 3);
@@ -122,6 +128,13 @@ void ObjectModel::buildTrianglesAndAddToVirtualScene(VirtualScene* virtualScene)
                 model_coefficients.push_back( vy ); // Y
                 model_coefficients.push_back( vz ); // Z
                 model_coefficients.push_back( 1.0f ); // W
+
+                bbox_min.x = std::min(bbox_min.x, vx);
+                bbox_min.y = std::min(bbox_min.y, vy);
+                bbox_min.z = std::min(bbox_min.z, vz);
+                bbox_max.x = std::max(bbox_max.x, vx);
+                bbox_max.y = std::max(bbox_max.y, vy);
+                bbox_max.z = std::max(bbox_max.z, vz);
 
                 // Inspecionando o código da tinyobjloader, o aluno Bernardo
                 // Sulzbach (2017/1) apontou que a maneira correta de testar se
@@ -157,6 +170,8 @@ void ObjectModel::buildTrianglesAndAddToVirtualScene(VirtualScene* virtualScene)
         theobject.num_indices    = last_index - first_index + 1; // Número de indices
         theobject.rendering_mode = GL_TRIANGLES;       // Índices correspondem ao tipo de rasterização GL_TRIANGLES.
         theobject.vertex_array_object_id = vertex_array_object_id;
+        theobject.bbox_min = bbox_min;
+        theobject.bbox_max = bbox_max;
         
         this->meshNames.push_back(theobject.name);
         
@@ -219,9 +234,9 @@ void ObjectModel::buildTrianglesAndAddToVirtualScene(VirtualScene* virtualScene)
 }
 
 
-void ObjectModel::draw() {
+void ObjectModel::draw(GpuProgram* gpuProgram) {
   for(std::string meshName : this->meshNames) {
-    this->virtualScene->drawObject(meshName.c_str());
+    this->virtualScene->drawObject(meshName.c_str(), gpuProgram);
   }
 }
 
