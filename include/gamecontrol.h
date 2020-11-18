@@ -18,29 +18,32 @@
 #include "shaders.h"
 #include "virtualscene.h"
 #include "windowparameters.h"
+#include "wave.h"
 
-class GameControl
-{
-private:
-    bool usePerspectiveProjection;
-    bool useFreeCamera;
-    bool showInfoText;
-    Shaders* shaders;
-    GpuProgram* gpuProgram;
-    VirtualScene* virtualScene;
-    Camera* camera;
-    Projection* projection;
-    WindowParameters* windowParameters;
-    MouseParameters* mouseParameters;
-    KeyboardParameters* keyboardParameters;
-    ObjectModel* shipModel;
-    ObjectModel* planeModel;
-    ObjectModel* playerModel;
-    ObjectInstance* player;
-public:
-    GameControl();
-    ~GameControl();
-    void updateGameState();
+class GameControl {
+    private:
+        bool usePerspectiveProjection;
+        bool useFreeCamera;
+        bool showInfoText;
+        Shaders* shaders;
+        GpuProgram* gpuProgram;
+        VirtualScene* virtualScene;
+        Camera* camera;
+        Projection* projection;
+        WindowParameters* windowParameters;
+        MouseParameters* mouseParameters;
+        KeyboardParameters* keyboardParameters;
+        ObjectModel* shipModel;
+        ObjectModel* planeModel;
+        ObjectModel* playerModel;
+        ObjectInstance* player;
+        std::vector<Wave> waves;
+        unsigned int currentWave;
+        bool gameOver;
+    public:
+        GameControl();
+        ~GameControl();
+        void updateGameState();
 };
 
 #endif
