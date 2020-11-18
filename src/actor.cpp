@@ -18,6 +18,10 @@ void Actor::attack(glm::vec3 targetPosition) {
     
 }
 
+void Actor::receiveDamage(int damage) {
+    healthPoints -= damage;
+}
+
 bool Actor::isAlive() {
     return healthPoints > 0;
 }

@@ -6,7 +6,7 @@
 #include "objectinstance.h"
 
 class Actor {
-    private:
+    protected:
         ObjectInstance* actor;
         int healthPoints;
     public:
@@ -14,6 +14,7 @@ class Actor {
         ObjectInstance* getObjectInstance();
         void/*Attack*/ attack();
         void/*Attack*/ attack(glm::vec3 targetPosition);
+        void receiveDamage(int damage);
         bool isAlive();
 };
 
