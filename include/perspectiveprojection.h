@@ -8,6 +8,7 @@
 class PerspectiveProjection : public Projection {
     public:
         PerspectiveProjection(Camera* camera, WindowParameters* windowParameters);
+        ~PerspectiveProjection();
         glm::mat4 generateMatrix() override;
 };
 

@@ -13,6 +13,7 @@ class LookAtCamera : public Camera {
         void setPosition(glm::vec3 position) override;
     public:
         LookAtCamera();
+        ~LookAtCamera();
         bool isFreeCamera() override;
 };
 

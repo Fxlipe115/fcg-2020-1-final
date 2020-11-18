@@ -18,6 +18,7 @@ class Camera {
         glm::vec4 getUpVector();
     public:
         Camera();
+        virtual ~Camera();
         virtual void setPosition(glm::vec3 position);
         float getTheta();
         void setTheta(float theta);

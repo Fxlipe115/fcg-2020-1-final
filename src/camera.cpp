@@ -10,6 +10,9 @@ Camera::Camera()
 {
 }
 
+Camera::~Camera() {
+}
+
 float Camera::getTheta() {
     return theta;
 }

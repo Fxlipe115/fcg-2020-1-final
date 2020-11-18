@@ -1,7 +1,7 @@
 #include "gamecontrol.h"
 
 GameControl::GameControl()
- : usePerspectiveProjection(true), showInfoText(true), 
+ : usePerspectiveProjection(true), showInfoText(true),
    camera(nullptr), projection(nullptr)
 {
     shaders = new Shaders("./src/shaders/shader_fragment.glsl", "./src/shaders/shader_vertex.glsl");
@@ -31,6 +31,19 @@ GameControl::GameControl()
     player->setTranslation({0.0, 0.7, 0.0});
 }
 
+GameControl::~GameControl() {
+    delete shaders;
+    delete gpuProgram;
+    delete virtualScene;
+    delete camera;
+    delete projection;
+    delete windowParameters;
+    delete mouseParameters;
+    delete keyboardParameters;
+    delete playerModel;
+    delete player;
+}
+
 void GameControl::updateGameState() {
     gpuProgram->use();
 
@@ -49,6 +62,7 @@ void GameControl::updateGameState() {
     cameraControl.updateCameraPosition();
     cameraControl.updateCameraOrientation();
 
+    delete projection;
     if (usePerspectiveProjection) {
         projection = new PerspectiveProjection(camera, windowParameters);
     } else {

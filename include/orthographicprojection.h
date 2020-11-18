@@ -8,6 +8,7 @@
 class OrthographicProjection : public Projection {
     public:
         OrthographicProjection(Camera* camera, WindowParameters* windowParameters);
+        ~OrthographicProjection();
         glm::mat4 generateMatrix() override;
 };
 

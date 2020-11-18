@@ -7,6 +7,9 @@ FreeCamera::FreeCamera()
 {
 }
 
+FreeCamera::~FreeCamera() {
+}
+
 glm::vec4 FreeCamera::getViewVector() {
     glm::vec4 viewVector = glm::vec4(0.0, 0.0, 1.0, 0.0)
                     * Matrix_Rotate_X(-phi)

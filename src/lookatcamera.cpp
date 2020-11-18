@@ -5,6 +5,9 @@ LookAtCamera::LookAtCamera()
 {
 }
 
+LookAtCamera::~LookAtCamera(){
+}
+
 bool LookAtCamera::isFreeCamera() {
     return false;
 }

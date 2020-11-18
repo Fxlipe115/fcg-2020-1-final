@@ -7,6 +7,9 @@ PerspectiveProjection::PerspectiveProjection(Camera* camera, WindowParameters* w
 {
 }
 
+PerspectiveProjection::~PerspectiveProjection() {
+}
+
 glm::mat4 PerspectiveProjection::generateMatrix() {
     float field_of_view = 3.141592 / 3.0f;
     float screenRatio = windowParameters->screenRatio;

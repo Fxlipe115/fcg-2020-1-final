@@ -22,6 +22,9 @@
 class GameControl
 {
 private:
+    bool usePerspectiveProjection;
+    bool useFreeCamera;
+    bool showInfoText;
     Shaders* shaders;
     GpuProgram* gpuProgram;
     VirtualScene* virtualScene;
@@ -34,11 +37,9 @@ private:
     ObjectModel* planeModel;
     ObjectModel* playerModel;
     ObjectInstance* player;
-    bool usePerspectiveProjection;
-    bool useFreeCamera;
-    bool showInfoText;
 public:
     GameControl();
+    ~GameControl();
     void updateGameState();
 };
 

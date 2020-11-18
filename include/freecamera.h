@@ -10,6 +10,7 @@ class FreeCamera : public Camera {
         glm::vec4 getViewVector() override;
     public:
         FreeCamera();
+        ~FreeCamera();
         bool isFreeCamera() override;
 };
 

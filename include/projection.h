@@ -12,6 +12,7 @@ class Projection {
         WindowParameters* windowParameters;
     public:
         Projection(Camera* camera, WindowParameters* windowParameters);
+        virtual ~Projection();
         virtual glm::mat4 generateMatrix() = 0;
 };
 

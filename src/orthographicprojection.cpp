@@ -7,6 +7,9 @@ OrthographicProjection::OrthographicProjection(Camera* camera, WindowParameters*
 {
 }
 
+OrthographicProjection::~OrthographicProjection() {
+}
+
 glm::mat4 OrthographicProjection::generateMatrix() {
     float screenRatio = windowParameters->screenRatio;
     float nearPlane = camera->getNearPlane();
