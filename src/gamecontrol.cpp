@@ -127,7 +127,7 @@ void GameControl::updateGameState() {
 
     for(Plane wall : scenery->getWalls()) {
         Sphere playerBoundingBox(player);
-        if(Collision::spherePlane(playerBoundingBox, wall)) {
+        if(Collision::collision(playerBoundingBox, wall)) {
             printf("collision\n");
         }
     }

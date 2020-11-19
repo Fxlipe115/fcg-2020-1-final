@@ -9,21 +9,25 @@
 
 #include <glm/vec3.hpp>
 
-bool Collision::boxBox(ObjectInstance* firstCollider, ObjectInstance* secondCollider) {
+bool Collision::collision(ObjectInstance* firstCollider, ObjectInstance* secondCollider) {
     return false;
 }
 
-bool Collision::boxPlane(ObjectInstance* firstCollider, Plane& plane) {
+bool Collision::collision(ObjectInstance* firstCollider, Plane& plane) {
     return false;
 }
 
-bool Collision::boxSphere(ObjectInstance* firstCollider, Sphere& sphere) {
+bool Collision::collision(ObjectInstance* firstCollider, Sphere& sphere) {
     return false;
 }
 
-bool Collision::spherePlane(Sphere& sphere, Plane& plane) {
+bool Collision::collision(Sphere& sphere, Plane& plane) {
     glm::vec3 closestPoint = plane.closestPointOnPlane(sphere.getCenter());
     float distSq = norm(sphere.getCenter() - closestPoint);
     float radiusSq = sphere.getRadius() * sphere.getRadius();
     return distSq < radiusSq;
+}
+
+bool Collision::collision(Plane& plane, Sphere& sphere) {
+    return Collision::collision(sphere, plane);
 }
