@@ -9,6 +9,8 @@ class Plane {
         float distanceToOrigin;
     public:
         Plane(glm::vec3 normal, float distanceToOrigin);
+        glm::vec3 getNormal();
+        float getDistanceToOrigin();
         float distanceToPlane(glm::vec3 point);
         bool isPointOnPlane(glm::vec3 point);
         glm::vec3 closestPointOnPlane(glm::vec3 point);

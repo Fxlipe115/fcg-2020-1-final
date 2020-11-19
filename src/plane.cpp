@@ -20,6 +20,14 @@ Plane::Plane(glm::vec3 normal, float distanceToOrigin)
     normal = glm::vec3(normalizedNormal);
 }
 
+glm::vec3 Plane::getNormal() {
+    return normal;
+}
+
+float Plane::getDistanceToOrigin() {
+    return distanceToOrigin;
+}
+
 float Plane::distanceToPlane(glm::vec3 point) {
     float pointDistance = dotproduct(glm::vec4(point, 0.0), glm::vec4(normal, 0.0));
     return pointDistance - distanceToOrigin;
