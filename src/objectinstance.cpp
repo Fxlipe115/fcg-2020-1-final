@@ -69,13 +69,13 @@ glm::mat4 ObjectInstance::transformationMatrix() {
 }
 
 glm::vec3 ObjectInstance::getBoundingBoxMin() {
-    glm::vec4 transformedBoundingBoxMin = glm::vec4(model->getBoundingBoxMin(), 0.0);
+    glm::vec4 transformedBoundingBoxMin = glm::vec4(model->getBoundingBoxMin(), 1.0);
     transformedBoundingBoxMin = transformationMatrix() * transformedBoundingBoxMin;
     return glm::vec3(transformedBoundingBoxMin);
 }
 
 glm::vec3 ObjectInstance::getBoundingBoxMax() {
-    glm::vec4 transformedBoundingBoxMax = glm::vec4(model->getBoundingBoxMax(), 0.0);
+    glm::vec4 transformedBoundingBoxMax = glm::vec4(model->getBoundingBoxMax(), 1.0);
     transformedBoundingBoxMax = transformationMatrix() * transformedBoundingBoxMax;
     return glm::vec3(transformedBoundingBoxMax);
 }

@@ -9,10 +9,10 @@ Scenery::Scenery(glm::vec3 size, VirtualScene* virtualScene)
     floor->setTranslation({0.0f, 0.0f, 0.0f});
     floor->setScale({size.x, 1.0f, size.z});
 
-    walls.push_back(Plane(glm::vec3( 1.0, 0.0,  0.0), size.x/2));
-    walls.push_back(Plane(glm::vec3(-1.0, 0.0,  0.0), size.x/2));
-    walls.push_back(Plane(glm::vec3( 0.0, 0.0,  1.0), size.z/2));
-    walls.push_back(Plane(glm::vec3( 0.0, 0.0, -1.0), size.z/2));
+    walls.push_back(Plane(glm::vec3( 1.0, 0.0,  0.0), size.x));
+    walls.push_back(Plane(glm::vec3(-1.0, 0.0,  0.0), size.x));
+    walls.push_back(Plane(glm::vec3( 0.0, 0.0,  1.0), size.z));
+    walls.push_back(Plane(glm::vec3( 0.0, 0.0, -1.0), size.z));
 }
 
 Scenery::~Scenery() {
