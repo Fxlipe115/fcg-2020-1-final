@@ -11,9 +11,9 @@ GameControl::GameControl()
     gpuProgram = new GpuProgram(shaders);
     virtualScene = new VirtualScene();
     textures = new Textures();
-    textures->loadTextureImage("./data/aircraftdeck.jpg");
+    textures->loadTextureImage("./data/A_Kuznetsov.tga");
+    textures->loadTextureImage("./data/A_Kuznetsov2.tga");
     textures->loadTextureImage("./data/water.jpg");
-    textures->loadTextureImage("./data/tc-earth_daymap_surface.jpg");
 
     windowParameters = new WindowParameters();
     mouseParameters = new MouseParameters();
@@ -33,7 +33,7 @@ GameControl::GameControl()
     player->setScale({0.01f, 0.01f, 0.01f});
     player->setTranslation({0.0, 0.7, 0.0});
 
-    scenery = new Scenery(glm::vec3(2.0, 0.0, 2.0), virtualScene);
+    scenery = new Scenery(glm::vec3(20.0, 0.0, 20.0), virtualScene);
     
     std::list<Actor> wave0list;
     for(int i = 0; i < 5; i++) {    

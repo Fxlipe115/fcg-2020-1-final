@@ -57,15 +57,13 @@ void main()
     // normais de cada vértice.
     vec4 n = normalize(normal);
 
-    vec4 spotlight = vec4(0.0f,2.0f,1.0f,1.0f);
+    vec4 spotlight = vec4(0.0f,50.0f,1.0f,1.0f);
 
     // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
-    vec4 l = normalize(spotlight - p);
+    vec4 l = normalize(vec4(0.2f,1.0f,0.0f,0.0f));
 
     // Vetor que define o sentido da câmera em relação ao ponto atual.
     vec4 v = normalize(camera_position - p);
-
-    vec4 spotlight_v = normalize(vec4(0.0f,-1.0f,0.0f,0.0f));
 
     // Vetor que define o sentido da reflexão especular ideal.
     vec4 r = -l + 2*n*dot(n, l);
@@ -76,28 +74,30 @@ void main()
     vec3 Ka; // Refletância ambiente
     float q; // Expoente especular para o modelo de iluminação de Phong
     vec3 Kd0 = vec3(0.0, 0.0, 0.0);
+    vec3 Kd1 = vec3(0.0, 0.0, 0.0);
 
     // Coordenadas de textura U e V
     float U = 0.0;
     float V = 0.0;
     if((shader_flags & CARRIER) != 0) {
-        Kd = vec3(1.0,1.0,1.0);
+        Kd = vec3(0.5,0.5,0.5);
         Ks = vec3(0.8,0.4,0.08);
         Ka = vec3(0.4,0.2,0.04);
         q = 1.0;
 
 
-        float U = -0.02 + texcoords.x*1.05;
-        float V = -2.03 + texcoords.y*4.1;
-        float mid = 0.5;
-        float rotation = M_PI;
-        vec2 coord = vec2(
-            cos(rotation) * (U - mid) + sin(rotation) * (V - mid) + mid,
-            cos(rotation) * (V - mid) - sin(rotation) * (U - mid) + mid
-        );
-        //coord = vec2(U,V);
-        coord.y = 1 - coord.y;
+        float U = texcoords.x;
+        float V = texcoords.y;
+        // float mid = 0.5;
+        // float rotation = M_PI;
+        // vec2 coord = vec2(
+        //     cos(rotation) * (U - mid) + sin(rotation) * (V - mid) + mid,
+        //     cos(rotation) * (V - mid) - sin(rotation) * (U - mid) + mid
+        // );
+        vec2 coord = vec2(U,V);
+        // coord.y = 1 - coord.y;
         Kd0 = texture(TextureImage0, coord).rgb;
+        //Kd1 = texture(TextureImage1, coord).rgb;
     }
 
     if((shader_flags & BUNNY) != 0) {
@@ -110,14 +110,15 @@ void main()
     }
 
     if((shader_flags & PLANE) != 0) {
-        Kd = vec3(0.2,0.2,0.2);
-        Ks = vec3(0.3,0.3,0.3);
+        Kd = vec3(0.06,0.83,0.79);
+        Ks = vec3(0.3,0.8,0.8);
         Ka = vec3(0.0,0.0,0.0);
         q = 20.0;
 
         float U = texcoords.x;
         float V = texcoords.y;
-        Kd0 = texture(TextureImage1, vec2(U,V)).rgb;
+
+        n = normalize(vec4(texture(TextureImage2, vec2(U,V)*50).rgb, 0.0));
     }
 
     if(shader_flags == 0) {
@@ -148,7 +149,7 @@ void main()
     // color = (dot(normalize(p-spotlight), normalize(spotlight_v)) < cos(0.523599f)) ?
     //         ambient_term :
     //         lambert_diffuse_term + ambient_term + phong_specular_term;
-    color = Kd0 + lambert_diffuse_term + ambient_term + phong_specular_term;
+    color = Kd0 + Kd1 + lambert_diffuse_term + ambient_term + phong_specular_term;
 
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas

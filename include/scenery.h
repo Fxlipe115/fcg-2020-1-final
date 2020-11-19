@@ -13,6 +13,7 @@ class Scenery {
         std::vector<Plane> walls;
         ObjectModel* floorModel;
         ObjectInstance* floor;
+        glm::vec3 skyColor;
     public:
         Scenery(glm::vec3 size, VirtualScene* virtualScene);
         ~Scenery();

@@ -105,14 +105,6 @@ int main(int argc, char* argv[])
     while (!glfwWindowShouldClose(window)) {
         // Aqui executamos as operações de renderização
 
-        // Definimos a cor do "fundo" do framebuffer como branco.  Tal cor é
-        // definida como coeficientes RGBA: Red, Green, Blue, Alpha; isto é:
-        // Vermelho, Verde, Azul, Alpha (valor de transparência).
-        // Conversaremos sobre sistemas de cores nas aulas de Modelos de Iluminação.
-        //
-        //           R     G     B     A
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
         // "Pintamos" todos os pixels do framebuffer com a cor definida acima,
         // e também resetamos todos os pixels do Z-buffer (depth buffer).
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
