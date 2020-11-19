@@ -18,6 +18,7 @@ class ObjectInstance {
         glm::mat4 transformationMatrix();
     public:
         ObjectInstance(ObjectModel* model);
+        ObjectModel* getModel();
         void setScale(glm::vec3 scale);
         glm::vec3 getScale();
         void setTranslation(glm::vec3 translation);
@@ -26,6 +27,8 @@ class ObjectInstance {
         glm::vec3 getRotation();
         glm::vec4 getFrontVector();
         void draw(GpuProgram* gpuProgram, int shaderFlags);
+        glm::vec3 getBoundingBoxMin();
+        glm::vec3 getBoundingBoxMax();
 };
 
 #endif

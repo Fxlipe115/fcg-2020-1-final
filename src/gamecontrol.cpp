@@ -1,5 +1,7 @@
 #include "gamecontrol.h"
 
+#include "collision.h"
+
 GameControl::GameControl()
  : usePerspectiveProjection(true), useFreeCamera(false),
    showInfoText(true), camera(nullptr), projection(nullptr), 
@@ -25,15 +27,13 @@ GameControl::GameControl()
     shipModel = new ObjectModel("./data/kuznetsov.obj");
     shipModel->buildTrianglesAndAddToVirtualScene(virtualScene);
 
-    planeModel = new ObjectModel("./data/plane.obj");
-    planeModel->buildTrianglesAndAddToVirtualScene(virtualScene);
-
     playerModel = new ObjectModel("./data/Shrek.obj");
     playerModel->buildTrianglesAndAddToVirtualScene(virtualScene);
     player = new ObjectInstance(playerModel);
     player->setScale({0.01f, 0.01f, 0.01f});
     player->setTranslation({0.0, 0.7, 0.0});
 
+    scenery = new Scenery(glm::vec3(2.0, 0.0, 2.0), virtualScene);
     
     std::list<Actor> wave0list;
     for(int i = 0; i < 5; i++) {    
@@ -91,10 +91,7 @@ void GameControl::updateGameState() {
 
     player->draw(gpuProgram, ShaderFlags::BUNNY);
 
-    ObjectInstance plane(planeModel);
-    plane.setTranslation({0.0f, 0.0f, 0.0f});
-    plane.setScale({2.0f, 1.0f, 2.0f});
-    plane.draw(gpuProgram, ShaderFlags::PLANE);
+    scenery->draw(gpuProgram);
 
     waves.at(currentWave).removeDeadEnemies();
     if(waves.at(currentWave).size() < 1) {
@@ -127,4 +124,11 @@ void GameControl::updateGameState() {
         }
     }
     keyboardParameters->pressedSwitches.clear();
+
+    for(Plane wall : scenery->getWalls()) {
+        Sphere playerBoundingBox(player);
+        if(Collision::spherePlane(playerBoundingBox, wall)) {
+            printf("collision\n");
+        }
+    }
 }

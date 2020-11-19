@@ -1,5 +1,7 @@
 #include "objectinstance.h"
 
+#include <glm/vec4.hpp>
+
 #include "matrices.h"
 
 ObjectInstance::ObjectInstance(ObjectModel* model)
@@ -8,6 +10,10 @@ ObjectInstance::ObjectInstance(ObjectModel* model)
     scale = { 1.0f, 1.0f, 1.0f };
     translation = { 0.0f, 0.0f, 0.0f };
     rotation = { 0.0f, 0.0f, 0.0f };
+}
+
+ObjectModel* ObjectInstance::getModel() {
+    return model;
 }
 
 
@@ -60,4 +66,16 @@ glm::mat4 ObjectInstance::transformationMatrix() {
          * Matrix_Rotate_Z(rotation.z)
          * Matrix_Rotate_Y(rotation.y)
          * Matrix_Rotate_X(rotation.x);
+}
+
+glm::vec3 ObjectInstance::getBoundingBoxMin() {
+    glm::vec4 rotatedBoundingBoxMin = glm::vec4(model->getBoundingBoxMin(), 0.0);
+    rotatedBoundingBoxMin = transformationMatrix() * rotatedBoundingBoxMin;
+    return glm::vec3(rotatedBoundingBoxMin);
+}
+
+glm::vec3 ObjectInstance::getBoundingBoxMax() {
+    glm::vec4 rotatedBoundingBoxMax = glm::vec4(model->getBoundingBoxMax(), 0.0);
+    rotatedBoundingBoxMax = transformationMatrix() * rotatedBoundingBoxMax;
+    return glm::vec3(rotatedBoundingBoxMax);
 }

@@ -15,6 +15,7 @@
 #include "perspectiveprojection.h"
 #include "playercontrol.h"
 #include "projection.h"
+#include "scenery.h"
 #include "shaders.h"
 #include "textures.h"
 #include "virtualscene.h"
@@ -36,9 +37,9 @@ class GameControl {
         MouseParameters* mouseParameters;
         KeyboardParameters* keyboardParameters;
         ObjectModel* shipModel;
-        ObjectModel* planeModel;
         ObjectModel* playerModel;
         ObjectInstance* player;
+        Scenery* scenery;
         std::vector<Wave> waves;
         unsigned int currentWave;
         bool gameOver;

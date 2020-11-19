@@ -6,6 +6,7 @@
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
+#include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 glm::mat4 Matrix(
@@ -67,6 +68,7 @@ glm::mat4 Matrix_Rotate_Z(float angle);
 // Função que calcula a norma Euclidiana de um vetor cujos coeficientes são
 // definidos em uma base ortonormal qualquer.
 float norm(glm::vec4 v);
+float norm(glm::vec3 v);
 
 // Matriz R de "rotação de um ponto" em relação à origem do sistema de
 // coordenadas e em torno do eixo definido pelo vetor 'axis'. Esta matriz pode
@@ -81,6 +83,7 @@ glm::vec4 crossproduct(glm::vec4 u, glm::vec4 v);
 // Produto escalar entre dois vetores u e v definidos em um sistema de
 // coordenadas ortonormal.
 float dotproduct(glm::vec4 u, glm::vec4 v);
+float dotproduct(glm::vec3 u, glm::vec3 v);
 
 // Matriz de mudança de coordenadas para o sistema de coordenadas da Câmera.
 glm::mat4 Matrix_Camera_View(glm::vec4 position_c, glm::vec4 view_vector, glm::vec4 up_vector);

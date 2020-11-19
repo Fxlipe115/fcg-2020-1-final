@@ -152,6 +152,11 @@ float norm(glm::vec4 v)
     return sqrt( vx*vx + vy*vy + vz*vz );
 }
 
+float norm(glm::vec3 v)
+{
+    return norm(glm::vec4(v, 0.0f));
+}
+
 // Matriz R de "rotação de um ponto" em relação à origem do sistema de
 // coordenadas e em torno do eixo definido pelo vetor 'axis'. Esta matriz pode
 // ser definida pela fórmula de Rodrigues. Lembre-se que o vetor que define o
@@ -214,6 +219,10 @@ float dotproduct(glm::vec4 u, glm::vec4 v)
     }
 
     return u1*v1 + u2*v2 + u3*v3;
+}
+
+float dotproduct(glm::vec3 u, glm::vec3 v) {
+    return dotproduct(glm::vec4(u, 0.0f), glm::vec4(v, 0.0f));
 }
 
 // Matriz de mudança de coordenadas para o sistema de coordenadas da Câmera.

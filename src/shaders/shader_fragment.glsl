@@ -81,8 +81,6 @@ void main()
     float U = 0.0;
     float V = 0.0;
     if((shader_flags & CARRIER) != 0) {
-        // PREENCHA AQUI
-        // Propriedades espectrais da esfera
         Kd = vec3(1.0,1.0,1.0);
         Ks = vec3(0.8,0.4,0.08);
         Ka = vec3(0.4,0.2,0.04);
@@ -112,12 +110,14 @@ void main()
     }
 
     if((shader_flags & PLANE) != 0) {
-        // PREENCHA AQUI
-        // Propriedades espectrais do plano
         Kd = vec3(0.2,0.2,0.2);
         Ks = vec3(0.3,0.3,0.3);
         Ka = vec3(0.0,0.0,0.0);
         q = 20.0;
+
+        float U = texcoords.x;
+        float V = texcoords.y;
+        Kd0 = texture(TextureImage1, vec2(U,V)).rgb;
     }
 
     if(shader_flags == 0) {
