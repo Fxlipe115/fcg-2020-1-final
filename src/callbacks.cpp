@@ -172,6 +172,10 @@ void Callbacks::keyCallback(GLFWwindow* window, int key, int scancode, int actio
         keyboardParameters->pressedSwitches.push_back(SwitchKeys::R_SWITCH_KEY);
     }
 
+    if (key == GLFW_KEY_C && action == GLFW_PRESS) {
+        keyboardParameters->pressedSwitches.push_back(SwitchKeys::C_SWITCH_KEY);
+    }
+
     if(key == GLFW_KEY_W) {
         if(action == GLFW_PRESS) {
             keyboardParameters->upKeyPressed = true;

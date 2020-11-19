@@ -10,6 +10,8 @@ GameControl::GameControl()
     virtualScene = new VirtualScene();
     textures = new Textures();
     textures->loadTextureImage("./data/aircraftdeck.jpg");
+    textures->loadTextureImage("./data/water.jpg");
+    textures->loadTextureImage("./data/tc-earth_daymap_surface.jpg");
 
     windowParameters = new WindowParameters();
     mouseParameters = new MouseParameters();
@@ -111,7 +113,15 @@ void GameControl::updateGameState() {
             fprintf(stdout,"Shaders recarregados!\n");
             fflush(stdout);
             break;
-        
+
+        case SwitchKeys::C_SWITCH_KEY:
+            useFreeCamera = !useFreeCamera;
+            break;
+
+        case SwitchKeys::P_SWITCH_KEY:
+            usePerspectiveProjection = !usePerspectiveProjection;
+            break;
+
         default:
             break;
         }
