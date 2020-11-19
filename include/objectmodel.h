@@ -17,12 +17,16 @@ class ObjectModel {
         std::vector<std::string> meshNames;
         VirtualScene* virtualScene;
         void computeNormals();
+        glm::vec3 boundingBoxMin;
+        glm::vec3 boundingBoxMax;
 
     public:
         ObjectModel(const char* filename, const char* basepath = NULL, bool triangulate = true);
         void buildTrianglesAndAddToVirtualScene(VirtualScene* virtualScene);
         void printObjectModelInfo();
         void draw(GpuProgram* gpuProgram);
+        glm::vec3 getBoundingBoxMin();
+        glm::vec3 getBoundingBoxMax();
 };
 
 #endif

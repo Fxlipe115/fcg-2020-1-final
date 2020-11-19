@@ -99,13 +99,15 @@ void ObjectModel::buildTrianglesAndAddToVirtualScene(VirtualScene* virtualScene)
     std::vector<float>  normal_coefficients;
     std::vector<float>  texture_coefficients;
 
+    const float minval = std::numeric_limits<float>::min();
+    const float maxval = std::numeric_limits<float>::max();
+    boundingBoxMin = glm::vec3(maxval,maxval,maxval);
+    boundingBoxMax = glm::vec3(minval,minval,minval);
+
     for (size_t shape = 0; shape < this->shapes.size(); ++shape)
     {
         size_t first_index = indices.size();
         size_t num_triangles = this->shapes[shape].mesh.num_face_vertices.size();
-
-        const float minval = std::numeric_limits<float>::min();
-        const float maxval = std::numeric_limits<float>::max();
 
         glm::vec3 bbox_min = glm::vec3(maxval,maxval,maxval);
         glm::vec3 bbox_max = glm::vec3(minval,minval,minval);
@@ -177,6 +179,13 @@ void ObjectModel::buildTrianglesAndAddToVirtualScene(VirtualScene* virtualScene)
         
         this->virtualScene = virtualScene;
         this->virtualScene->addSceneObject(theobject);
+
+        boundingBoxMin.x = std::min(boundingBoxMin.x, bbox_min.x);
+        boundingBoxMin.y = std::min(boundingBoxMin.y, bbox_min.y);
+        boundingBoxMin.z = std::min(boundingBoxMin.z, bbox_min.z);
+        boundingBoxMax.x = std::max(boundingBoxMax.x, bbox_max.x);
+        boundingBoxMax.y = std::max(boundingBoxMax.y, bbox_max.y);
+        boundingBoxMax.z = std::max(boundingBoxMax.z, bbox_max.z);
     }
 
     GLuint VBO_model_coefficients_id;
@@ -405,4 +414,12 @@ void ObjectModel::printObjectModelInfo()
     }
     printf("\n");
   }
+}
+
+glm::vec3 ObjectModel::getBoundingBoxMin() {
+       return boundingBoxMin;
+}
+
+glm::vec3 ObjectModel::getBoundingBoxMax() {
+       return boundingBoxMax;
 }
