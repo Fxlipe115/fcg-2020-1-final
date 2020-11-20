@@ -22,6 +22,7 @@ class Projectile {
         glm::vec3 getPosition();
         int getDamage();
         bool isOutOfBounds();
+        void setOutOfBounds(bool outOfBounds);
 };
 
 #endif

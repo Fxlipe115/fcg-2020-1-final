@@ -21,3 +21,7 @@ int Projectile::getDamage() {
 bool Projectile::isOutOfBounds() {
     return outOfBounds;
 }
+
+void Projectile::setOutOfBounds(bool outOfBounds) {
+    this->outOfBounds = outOfBounds;
+}

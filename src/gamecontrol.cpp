@@ -3,6 +3,7 @@
 #include "bezierprojectile.h"
 #include "linearprojectile.h"
 #include "beziercurve.h"
+#include "collision.h"
 
 GameControl::GameControl()
  : usePerspectiveProjection(true), useFreeCamera(false),
@@ -109,6 +110,12 @@ void GameControl::updateGameState() {
     for(Projectile* projectile : projectiles) {
         projectile->move(0.1);
         projectile->getObjectInstance()->draw(gpuProgram,ShaderFlags::BUNNY);
+        Sphere boundingSphere(projectile->getObjectInstance());
+        for(Plane& wall : scenery->getWalls()) {
+            if(Collision::collision(boundingSphere, wall)) {
+                projectile->setOutOfBounds(true);
+            }
+        }
     }
     projectiles.remove_if([](Projectile*& projectile) {
         return projectile->isOutOfBounds();
