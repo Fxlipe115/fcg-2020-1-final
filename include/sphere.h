@@ -13,7 +13,7 @@ class Sphere {
         float radius;
     public:
         Sphere(glm::vec3 center, float radius);
-        Sphere(ObjectInstance* objectIntance);
+        Sphere(ObjectInstance* objectInstance);
         glm::vec3 getCenter();
         float getRadius();
         bool isPointInsideSphere(glm::vec3 point);

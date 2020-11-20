@@ -14,9 +14,9 @@ Sphere::Sphere(glm::vec3 center, float radius)
 {
 }
 
-Sphere::Sphere(ObjectInstance* objectIntance) {
-    glm::vec4 objectBoundingBoxMin = glm::vec4(objectIntance->getBoundingBoxMin(), 1.0);
-    glm::vec4 objectBoundingBoxMax = glm::vec4(objectIntance->getBoundingBoxMax(), 1.0);
+Sphere::Sphere(ObjectInstance* objectInstance) {
+    glm::vec4 objectBoundingBoxMin = glm::vec4(objectInstance->getBoundingBoxMin(), 1.0);
+    glm::vec4 objectBoundingBoxMax = glm::vec4(objectInstance->getBoundingBoxMax(), 1.0);
     glm::vec4 radiusVector = (objectBoundingBoxMax - objectBoundingBoxMin) * 0.5f;
     radius = norm(radiusVector);
     center = glm::vec3(objectBoundingBoxMin + radiusVector);
