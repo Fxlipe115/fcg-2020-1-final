@@ -15,6 +15,7 @@ class PlayerControl {
         void updatePlayerPosition();
         void updatePlayerOrientation();
         glm::vec4 calculateCollisionNormalVector();
+        double lastUpdateTime;
     public:
         PlayerControl(ObjectInstance* player, KeyboardParameters* keyboard, MouseParameters* mouse, Scenery* scenery);
         void updatePlayer();

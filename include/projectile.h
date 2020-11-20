@@ -7,16 +7,19 @@
 #include "beziercurve.h"
 
 class Projectile {
-    private:
+    protected:
         ObjectInstance* projectile;
-        BezierCurve* bezierpath;
         glm::vec3 position;
         int damage;
+        glm::vec3 direction;
         float traveledDistance;
     public:
-        Projectile(ObjectInstance* projectile, int damage, BezierCurve* bezierpath);
-        void move(float speed);
+        Projectile(ObjectInstance* projectile, int damage);
+        Projectile(ObjectInstance* projectile, int damage, glm::vec3 initialPosition, glm::vec3 direction);
+        virtual void move(float speed) = 0;
+        ObjectInstance* getObjectInstance();
         glm::vec3 getPosition();
+        int getDamage();
 };
 
 #endif
