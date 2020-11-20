@@ -21,6 +21,7 @@
 #include "virtualscene.h"
 #include "windowparameters.h"
 #include "wave.h"
+#include "projectile.h"
 
 class GameControl {
     private:
@@ -38,11 +39,13 @@ class GameControl {
         KeyboardParameters* keyboardParameters;
         ObjectModel* shipModel;
         ObjectModel* playerModel;
+        ObjectModel* bulletModel;
         ObjectInstance* player;
         Scenery* scenery;
         std::vector<Wave> waves;
         unsigned int currentWave;
         bool gameOver;
+        std::list<Projectile*> projectiles;
     public:
         GameControl();
         ~GameControl();

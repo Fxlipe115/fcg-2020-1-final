@@ -1,6 +1,8 @@
 #include "gamecontrol.h"
 
-#include "collision.h"
+#include "bezierprojectile.h"
+#include "linearprojectile.h"
+#include "beziercurve.h"
 
 GameControl::GameControl()
  : usePerspectiveProjection(true), useFreeCamera(false),
@@ -46,6 +48,17 @@ GameControl::GameControl()
     }
 
     waves.push_back(Wave(wave0list));
+
+    bulletModel = new ObjectModel("./data/sphere.obj");
+    bulletModel->buildTrianglesAndAddToVirtualScene(virtualScene);
+
+    ObjectInstance* arcbullet = new ObjectInstance(bulletModel);
+    BezierCurve* trajectory = new BezierCurve({0.0, 0.0, 0.0}, {10.0, 5.0, 0.0}, {20.0, 5.0, 0.0}, {30.0, 0.0, 0.0});
+    projectiles.push_back(new BezierProjectile(arcbullet, trajectory, 10));
+
+    ObjectInstance* linearbullet = new ObjectInstance(bulletModel);
+    projectiles.push_back(new LinearProjectile(linearbullet, 10, {0.0, 1.0, 0.0}, {0.0, 0.0, -1.0}));
+
 }
 
 GameControl::~GameControl() {
@@ -92,6 +105,14 @@ void GameControl::updateGameState() {
     player->draw(gpuProgram, ShaderFlags::BUNNY);
 
     scenery->draw(gpuProgram);
+
+    for(Projectile* projectile : projectiles) {
+        projectile->move(0.1);
+        projectile->getObjectInstance()->draw(gpuProgram,ShaderFlags::BUNNY);
+    }
+    projectiles.remove_if([](Projectile*& projectile) {
+        return projectile->isOutOfBounds();
+    });
 
     waves.at(currentWave).removeDeadEnemies();
     if(waves.at(currentWave).size() < 1) {

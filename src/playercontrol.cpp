@@ -43,7 +43,7 @@ void PlayerControl::updatePlayerPosition() {
     glm::vec4 collisionNormalVector = calculateCollisionNormalVector();
     float speedIntoCollision = -dotproduct(movementVector, collisionNormalVector);
     
-    float speedSlack = 0.1;
+    float speedSlack = 0.5;
     playerPosition += movementVector + collisionNormalVector * (speedIntoCollision-speedSlack);
     
     player->setTranslation(glm::vec3(playerPosition));

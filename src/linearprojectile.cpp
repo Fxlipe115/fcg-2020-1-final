@@ -7,8 +7,10 @@ LinearProjectile::LinearProjectile(ObjectInstance* projectile, int damage, glm::
 {
     position = initialPosition;
     direction = direction / norm(direction);
+    projectile->setTranslation(position);
 }
 
 void LinearProjectile::move(float speed) {
     position = position + direction * speed;
+    projectile->setTranslation(position);
 }

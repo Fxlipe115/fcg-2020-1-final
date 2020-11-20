@@ -13,6 +13,7 @@ class Projectile {
         int damage;
         glm::vec3 direction;
         float traveledDistance;
+        bool outOfBounds;
     public:
         Projectile(ObjectInstance* projectile, int damage);
         Projectile(ObjectInstance* projectile, int damage, glm::vec3 initialPosition, glm::vec3 direction);
@@ -20,6 +21,7 @@ class Projectile {
         ObjectInstance* getObjectInstance();
         glm::vec3 getPosition();
         int getDamage();
+        bool isOutOfBounds();
 };
 
 #endif

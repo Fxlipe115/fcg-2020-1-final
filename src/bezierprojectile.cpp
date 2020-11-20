@@ -6,6 +6,7 @@ BezierProjectile::BezierProjectile(ObjectInstance* projectile, BezierCurve* bezi
  : Projectile(projectile, damage), bezierpath(bezierpath), traveledDistance(0.0)
 {
     position = bezierpath->getA();
+    projectile->setTranslation(position);
 }
 
 void BezierProjectile::move(float speed) {
@@ -14,6 +15,16 @@ void BezierProjectile::move(float speed) {
     traveledDistance += speed;
 
     float deltaT = traveledDistance / curveDistance;
-    deltaT = (deltaT > 1.0) ? 1.0 : deltaT;
+
+    if(deltaT > 1.0) {
+        deltaT = 1.0;
+        outOfBounds = true;
+    }
     position = bezierpath->getPointAt(deltaT);
+
+    projectile->setTranslation(position);
+
+    if(projectile->getTranslation().y < -5.0) {
+        outOfBounds = true;
+    }
 }

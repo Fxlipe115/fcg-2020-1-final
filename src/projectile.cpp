@@ -1,7 +1,7 @@
 #include "projectile.h"
 
 Projectile::Projectile(ObjectInstance* projectile, int damage) 
- : projectile(projectile), damage(damage)
+ : projectile(projectile), damage(damage), outOfBounds(false)
 {
     
 }
@@ -16,4 +16,8 @@ ObjectInstance* Projectile::getObjectInstance() {
 
 int Projectile::getDamage() {
     return damage;
+}
+
+bool Projectile::isOutOfBounds() {
+    return outOfBounds;
 }
