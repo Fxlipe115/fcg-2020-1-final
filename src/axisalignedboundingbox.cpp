@@ -13,7 +13,15 @@ AxisAlignedBoundingBox::AxisAlignedBoundingBox(ObjectInstance* objectInstance) {
     glm::vec4 objectBoundingBoxMin = glm::vec4(objectInstance->getBoundingBoxMin(), 1.0);
     glm::vec4 objectBoundingBoxMax = glm::vec4(objectInstance->getBoundingBoxMax(), 1.0);
     origin = (objectBoundingBoxMin + objectBoundingBoxMax) * 0.5f;
-    size = abs(objectBoundingBoxMax - objectBoundingBoxMin) * 0.5f;
+    size = (objectBoundingBoxMax - objectBoundingBoxMin) * 0.5f;
+}
+
+glm::vec3 AxisAlignedBoundingBox::getOrigin() {
+    return origin;
+}
+
+glm::vec3 AxisAlignedBoundingBox::getSize() {
+    return size;
 }
 
 glm::vec3 AxisAlignedBoundingBox::getMin() {
@@ -40,7 +48,7 @@ bool AxisAlignedBoundingBox::isPointInsideBox(glm::vec3 point) {
     return true;
 }
 
-glm::vec3 AxisAlignedBoundingBox::closestPointOnSphere(glm::vec3 point) {
+glm::vec3 AxisAlignedBoundingBox::closestPointOnBox(glm::vec3 point) {
     glm::vec3 result = point;
     glm::vec3 min = getMin();
     glm::vec3 max = getMax();

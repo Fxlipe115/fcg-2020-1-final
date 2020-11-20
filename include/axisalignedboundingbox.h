@@ -13,10 +13,12 @@ class AxisAlignedBoundingBox {
     public:
         AxisAlignedBoundingBox(glm::vec3 origin, glm::vec3 size);
         AxisAlignedBoundingBox(ObjectInstance* objectInstance);
+        glm::vec3 getOrigin();
+        glm::vec3 getSize();
         glm::vec3 getMin();
         glm::vec3 getMax();
         bool isPointInsideBox(glm::vec3 point);
-        glm::vec3 closestPointOnSphere(glm::vec3 point);
+        glm::vec3 closestPointOnBox(glm::vec3 point);
 };
 
 #endif
