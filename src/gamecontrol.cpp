@@ -71,7 +71,7 @@ void GameControl::updateGameState() {
         camera = new LookAtCamera();
     }
 
-    PlayerControl playerControl(player, keyboardParameters, mouseParameters);
+    PlayerControl playerControl(player, keyboardParameters, mouseParameters, scenery);
     playerControl.updatePlayer();
 
     CameraControl cameraControl(camera, player, mouseParameters);
@@ -124,11 +124,4 @@ void GameControl::updateGameState() {
         }
     }
     keyboardParameters->pressedSwitches.clear();
-
-    for(Plane wall : scenery->getWalls()) {
-        Sphere playerBoundingBox(player);
-        if(Collision::collision(playerBoundingBox, wall)) {
-            printf("collision\n");
-        }
-    }
 }

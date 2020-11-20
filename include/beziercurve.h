@@ -11,8 +11,12 @@ class BezierCurve {
         glm::vec3 c;
         glm::vec3 d;
     public:
-        glm::vec3 getPointAt(float deltaT);
         BezierCurve(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 d);
+        glm::vec3 getPointAt(float deltaT);
+        glm::vec3 getA();
+        glm::vec3 getB();
+        glm::vec3 getC();
+        glm::vec3 getD();
 };
 
 #endif

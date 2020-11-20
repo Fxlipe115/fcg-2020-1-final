@@ -95,7 +95,7 @@ void Callbacks::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) 
         mouseParameters->rotationAnglePhi += 0.01f*dy;
     
         // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
-        float phimax = 3.141592f/2;
+        float phimax = 3.141592f/2 - 0.1;
         float phimin = -phimax;
     
         if (mouseParameters->rotationAnglePhi > phimax)

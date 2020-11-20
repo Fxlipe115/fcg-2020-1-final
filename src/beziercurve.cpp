@@ -17,3 +17,21 @@ glm::vec3 BezierCurve::getPointAt(float deltaT) {
   
     return glm::vec3(pointX, pointY, pointZ);
 }
+
+glm::vec3 BezierCurve::getA() {
+    return a;
+}
+
+glm::vec3 BezierCurve::getB() {
+    return b;
+}
+
+glm::vec3 BezierCurve::getC() {
+    return c;
+}
+
+glm::vec3 BezierCurve::getD() {
+    return d;
+}
+
+

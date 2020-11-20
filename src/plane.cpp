@@ -33,6 +33,11 @@ float Plane::distanceToPlane(glm::vec3 point) {
     return pointDistance - distanceToOrigin;
 }
 
+float Plane::distanceToPlane(Sphere& sphere) {
+    float distanceToCenter = distanceToPlane(sphere.getCenter());
+    return distanceToCenter - sphere.getRadius();
+}
+
 bool Plane::isPointOnPlane(glm::vec3 point) {
     float dot = dotproduct(point, normal);
     return dot - distanceToOrigin == 0.0f;
