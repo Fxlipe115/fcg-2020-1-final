@@ -118,7 +118,7 @@ void main()
         float U = texcoords.x;
         float V = texcoords.y;
 
-        n = normalize(vec4(texture(TextureImage2, vec2(U,V)*50).rgb, 0.0));
+        n = normalize(vec4(texture(TextureImage2, vec2(U,V)*1000).rgb, 0.0));
     }
 
     if(shader_flags == 0) {

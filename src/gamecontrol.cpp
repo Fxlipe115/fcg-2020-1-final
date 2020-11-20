@@ -33,7 +33,7 @@ GameControl::GameControl()
     player->setScale({0.01f, 0.01f, 0.01f});
     player->setTranslation({0.0, 0.7, 0.0});
 
-    scenery = new Scenery(glm::vec3(20.0, 0.0, 20.0), virtualScene);
+    scenery = new Scenery(glm::vec3(50.0, 0.0, 50.0), virtualScene);
     
     std::list<Actor> wave0list;
     for(int i = 0; i < 5; i++) {    

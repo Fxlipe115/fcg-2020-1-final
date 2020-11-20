@@ -7,7 +7,7 @@ Scenery::Scenery(glm::vec3 size, VirtualScene* virtualScene)
     floorModel->buildTrianglesAndAddToVirtualScene(virtualScene);
     floor = new ObjectInstance(floorModel);
     floor->setTranslation({0.0f, 0.0f, 0.0f});
-    floor->setScale({size.x, 1.0f, size.z});
+    floor->setScale({500.0f, 1.0f, 500.0f});
 
     walls.push_back(Plane(glm::vec3( 1.0, 0.0,  0.0), size.x));
     walls.push_back(Plane(glm::vec3(-1.0, 0.0,  0.0), size.x));
