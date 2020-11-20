@@ -4,6 +4,7 @@
 #include "linearprojectile.h"
 #include "beziercurve.h"
 #include "collision.h"
+#include "textrendering.h"
 
 GameControl::GameControl()
  : usePerspectiveProjection(true), useFreeCamera(false),
@@ -32,11 +33,12 @@ GameControl::GameControl()
 
     playerModel = new ObjectModel("./data/Shrek.obj");
     playerModel->buildTrianglesAndAddToVirtualScene(virtualScene);
-    player = new ObjectInstance(playerModel);
-    player->setScale({0.01f, 0.01f, 0.01f});
-    player->setTranslation({0.0, 0.7, 0.0});
+    playerObject = new ObjectInstance(playerModel);
+    playerObject->setScale({0.01f, 0.01f, 0.01f});
+    playerObject->setTranslation({0.0, 0.6, 10.0});
+    scene.player = new Actor(playerObject, 2000);
 
-    scenery = new Scenery(glm::vec3(50.0, 0.0, 50.0), virtualScene);
+    scene.scenery = new Scenery(glm::vec3(50.0, 0.0, 50.0), virtualScene);
     
     std::list<Actor> wave0list;
     for(int i = 0; i < 5; i++) {    
@@ -45,7 +47,7 @@ GameControl::GameControl()
         ship->setScale({1.0, 1.0, 1.0});
         ship->setRotation({-1.57, 0.0, 0.0});
 
-        wave0list.push_back(Actor(ship, 200));
+        wave0list.push_back(Actor(ship, 2000));
     }
 
     waves.push_back(Wave(wave0list));
@@ -55,10 +57,10 @@ GameControl::GameControl()
 
     ObjectInstance* arcbullet = new ObjectInstance(bulletModel);
     BezierCurve* trajectory = new BezierCurve({0.0, 0.0, 0.0}, {10.0, 5.0, 0.0}, {20.0, 5.0, 0.0}, {30.0, 0.0, 0.0});
-    projectiles.push_back(new BezierProjectile(arcbullet, trajectory, 10));
+    scene.projectiles.push_back(new BezierProjectile(arcbullet, trajectory, 10));
 
     ObjectInstance* linearbullet = new ObjectInstance(bulletModel);
-    projectiles.push_back(new LinearProjectile(linearbullet, 10, {0.0, 1.0, 0.0}, {0.0, 0.0, -1.0}));
+    scene.projectiles.push_back(new LinearProjectile(linearbullet, 10, {0.0, 1.0, 0.0}, {0.0, 0.0, -1.0}));
 
 }
 
@@ -72,10 +74,10 @@ GameControl::~GameControl() {
     delete mouseParameters;
     delete keyboardParameters;
     delete playerModel;
-    delete player;
+    delete scene.player;
 }
 
-void GameControl::updateGameState() {
+void GameControl::updateGameState(GLFWwindow* window) {
     gpuProgram->use();
 
     delete camera;
@@ -85,11 +87,34 @@ void GameControl::updateGameState() {
         camera = new LookAtCamera();
     }
 
-    PlayerControl playerControl(player, keyboardParameters, mouseParameters, scenery);
-    playerControl.updatePlayer();
+    if(currentWave < waves.size()) {
+        scene.wave = &waves[currentWave];
+    } else {
+        gameOver = true;
+    }
 
-    CameraControl cameraControl(camera, player, mouseParameters);
+    if(!scene.player->isAlive()) {
+        gameOver = true;
+    }
+
+    if(!gameOver){
+        PlayerControl playerControl(&scene, keyboardParameters, mouseParameters);
+        playerControl.updatePlayer();
+
+        float lineheight = TextRendering_LineHeight(window);
+        float charwidth = TextRendering_CharWidth(window);
+        char buffer[20];
+        int numchars = snprintf(buffer, 20, "Health %d", scene.player->getHealthPoints());
+        TextRendering_PrintString(window, buffer, 1.0f-(numchars + 30)*charwidth, 1.0f-lineheight, 1.0f);
+    } else {
+        float lineheight = TextRendering_LineHeight(window);
+        float charwidth = TextRendering_CharWidth(window);
+        TextRendering_PrintString(window, "Game Over", 1.0f-(10 + 30)*charwidth, 1.0f-lineheight, 1.0f);
+    }
+    CameraControl cameraControl(camera, playerObject, mouseParameters);
     cameraControl.updateCamera();
+
+    gpuProgram->use();
 
     delete projection;
     if (usePerspectiveProjection) {
@@ -98,36 +123,20 @@ void GameControl::updateGameState() {
         projection = new OrthographicProjection(camera, windowParameters);
     }
 
-    gpuProgram->sendViewMatrixToGPU(camera->getViewMatrix());
-    gpuProgram->sendProjectionMatrixToGPU(projection->generateMatrix());
-
-    waves.at(currentWave).drawEnemies(gpuProgram);
-
-    player->draw(gpuProgram, ShaderFlags::BUNNY);
-
-    scenery->draw(gpuProgram);
-
-    for(Projectile* projectile : projectiles) {
+    for(Projectile* projectile : scene.projectiles) {
         projectile->move(0.1);
-        projectile->getObjectInstance()->draw(gpuProgram,ShaderFlags::BUNNY);
+        projectile->getObjectInstance()->draw(gpuProgram,ShaderFlags::BULLET);
         Sphere boundingSphere(projectile->getObjectInstance());
-        for(Plane& wall : scenery->getWalls()) {
-            if(Collision::collision(boundingSphere, wall)) {
+        for(Plane& wall : scene.scenery->getWalls()) {
+            Collision collision;
+            if(collision.collision(boundingSphere, wall)) {
                 projectile->setOutOfBounds(true);
             }
         }
     }
-    projectiles.remove_if([](Projectile*& projectile) {
+    scene.projectiles.remove_if([](Projectile*& projectile) {
         return projectile->isOutOfBounds();
     });
-
-    waves.at(currentWave).removeDeadEnemies();
-    if(waves.at(currentWave).size() < 1) {
-        currentWave++;
-    }
-    if(currentWave >= waves.size()) {
-        gameOver = true;
-    }
 
     for(SwitchKeys key : keyboardParameters->pressedSwitches) {
         switch (key) {
@@ -152,4 +161,25 @@ void GameControl::updateGameState() {
         }
     }
     keyboardParameters->pressedSwitches.clear();
+
+    gpuProgram->sendViewMatrixToGPU(camera->getViewMatrix());
+    gpuProgram->sendProjectionMatrixToGPU(projection->generateMatrix());
+
+    if(scene.player->isAlive()) {
+        playerObject->draw(gpuProgram, ShaderFlags::PLAYER);
+    }
+
+    if(!gameOver) {
+        waves.at(currentWave).removeDeadEnemies();
+        waves.at(currentWave).drawEnemies(gpuProgram);
+        if(waves.at(currentWave).size() < 1) {
+            currentWave++;
+        }
+    }
+    
+    if(currentWave >= waves.size()) {
+        gameOver = true;
+    }
+
+    scene.scenery->draw(gpuProgram);
 }

@@ -1,23 +1,21 @@
 #ifndef _PLAYERCONTROL_H
 #define _PLAYERCONTROL_H
 
-#include "objectinstance.h"
 #include "keyboardparameters.h"
 #include "mouseparameters.h"
-#include "scenery.h"
+#include "scene.h"
 
 class PlayerControl {
     private:
-        ObjectInstance* player;
+        Scene* scene;
         KeyboardParameters* keyboard;
         MouseParameters* mouse;
-        Scenery* scenery;
         void updatePlayerPosition();
         void updatePlayerOrientation();
         glm::vec4 calculateCollisionNormalVector();
         double lastUpdateTime;
     public:
-        PlayerControl(ObjectInstance* player, KeyboardParameters* keyboard, MouseParameters* mouse, Scenery* scenery);
+        PlayerControl(Scene* scene, KeyboardParameters* keyboard, MouseParameters* mouse);
         void updatePlayer();
 };
 

@@ -5,11 +5,13 @@
 *
 */
 
-#include <glm/vec3.hpp>
-
 #include "collision.h"
 #include "matrices.h"
 
+Collision::Collision() 
+ : directionOfCollision({0.0, 0.0, 0.0})
+{
+}
 
 bool Collision::collision(AxisAlignedBoundingBox& firstBox, AxisAlignedBoundingBox& secondBox) {
     glm::vec3 aMin = firstBox.getMin();
@@ -29,31 +31,45 @@ bool Collision::collision(AxisAlignedBoundingBox& box, Plane& plane) {
     float dot = dotproduct(plane.getNormal(), box.getOrigin());
     float dist = dot - plane.getDistanceToOrigin();
 
+    directionOfCollision = -plane.getNormal();
+
     return fabsf(dist) <= pLen;
 }
 
 bool Collision::collision(Plane& plane, AxisAlignedBoundingBox& box) {
-    return Collision::collision(box, plane);
+    bool collision = Collision::collision(box, plane);
+    directionOfCollision = -directionOfCollision;
+    return collision;
 }
 
 bool Collision::collision(AxisAlignedBoundingBox& box, Sphere& sphere) {
     glm::vec3 closestPoint = box.closestPointOnBox(sphere.getCenter());
-    float distSq = norm(sphere.getCenter() - closestPoint);
+    directionOfCollision = sphere.getCenter() - closestPoint;
+    float distSq = norm(directionOfCollision);
     float radiusSq = sphere.getRadius() * sphere.getRadius();
     return distSq < radiusSq;
 }
 
 bool Collision::collision(Sphere& sphere, AxisAlignedBoundingBox& box) {
-    return Collision::collision(box,sphere);
+    bool collision = this->collision(box,sphere);
+    directionOfCollision = -directionOfCollision;
+    return collision;
 }
 
 bool Collision::collision(Sphere& sphere, Plane& plane) {
     glm::vec3 closestPoint = plane.closestPointOnPlane(sphere.getCenter());
-    float distSq = norm(sphere.getCenter() - closestPoint);
+    directionOfCollision = closestPoint - sphere.getCenter();
+    float distSq = norm(directionOfCollision);
     float radiusSq = sphere.getRadius() * sphere.getRadius();
     return distSq < radiusSq;
 }
 
 bool Collision::collision(Plane& plane, Sphere& sphere) {
-    return Collision::collision(sphere, plane);
+    bool collision = this->collision(sphere, plane);
+    directionOfCollision = -directionOfCollision;
+    return collision;
+}
+
+glm::vec3 Collision::getDirectionOfCollision() {
+    return directionOfCollision / norm(directionOfCollision);
 }

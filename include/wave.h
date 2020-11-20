@@ -12,6 +12,7 @@ class Wave {
     public:
         Wave(std::list<Actor>& enemies);
         void drawEnemies(GpuProgram* gpuProgram);
+        std::list<Actor>& getEnemies();
         void removeDeadEnemies();
         int size();
 };

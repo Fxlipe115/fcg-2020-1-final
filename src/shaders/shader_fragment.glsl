@@ -20,8 +20,11 @@ uniform mat4 projection;
 
 // Identificador que define qual objeto está sendo desenhado no momento
 #define CARRIER 1
-#define BUNNY  2
-#define PLANE  4
+#define PLAYER  2
+#define PLANE   4
+#define BULLET  8
+#define PHONG   16
+#define GOURAUD 32
 uniform int shader_flags;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -100,11 +103,16 @@ void main()
         //Kd1 = texture(TextureImage1, coord).rgb;
     }
 
-    if((shader_flags & BUNNY) != 0) {
-        // PREENCHA AQUI
-        // Propriedades espectrais do coelho
+    if((shader_flags & PLAYER) != 0) {
         Kd = vec3(0.08,0.8,0.4);
         Ks = vec3(0.8,0.8,0.8);
+        Ka = vec3(0.4,0.4,0.4);
+        q = 32.0;
+    }
+
+    if((shader_flags & BULLET) != 0) {
+        Kd = vec3(0.0,0.0,0.0);
+        Ks = vec3(0.4,0.4,0.4);
         Ka = vec3(0.4,0.4,0.4);
         q = 32.0;
     }
@@ -130,25 +138,29 @@ void main()
     }
 
     // Espectro da fonte de iluminação
-    vec3 I = vec3(1.0,1.0,1.0); // PREENCH AQUI o espectro da fonte de luz
+    vec3 I = vec3(1.0,1.0,1.0); 
 
     // Espectro da luz ambiente
-    vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
+    vec3 Ia = vec3(0.2,0.2,0.2);
+
+    // vetor h intermediario entre l e v
+    /*vec4 h = (l + v)/ length (l + v);*/
 
     // Termo difuso utilizando a lei dos cossenos de Lambert
-    vec3 lambert_diffuse_term = Kd * I * max(0, dot(n, l)); // PREENCHA AQUI o termo difuso de Lambert
+    vec3 lambert_diffuse_term = Kd * I * max(0, dot(n, l));
 
     // Termo ambiente
-    vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
+    vec3 ambient_term = Ka*Ia;
 
     // Termo especular utilizando o modelo de iluminação de Phong
-    vec3 phong_specular_term = Ks * I * pow(max(0, dot(r, v)), q); // PREENCH AQUI o termo especular de Phong
+    vec3 phong_specular_term = Ks * I * pow(max(0, dot(r, v)), q);
+
+    /*vec3 blinn_phong_specular_term = Ks * I * pow(max(0 , dot(n, h)), q);*/
 
     // Cor final do fragmento calculada com uma combinação dos termos difuso,
-    // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
+    // especular, e ambiente.
     // color = (dot(normalize(p-spotlight), normalize(spotlight_v)) < cos(0.523599f)) ?
-    //         ambient_term :
-    //         lambert_diffuse_term + ambient_term + phong_specular_term;
+    //ambient_term :lambert_diffuse_term + ambient_term + phong_specular_term;
     color = Kd0 + Kd1 + lambert_diffuse_term + ambient_term + phong_specular_term;
 
     // Cor final com correção gamma, considerando monitor sRGB.

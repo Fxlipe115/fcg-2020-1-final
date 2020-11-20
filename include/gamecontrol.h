@@ -15,6 +15,7 @@
 #include "perspectiveprojection.h"
 #include "playercontrol.h"
 #include "projection.h"
+#include "scene.h"
 #include "scenery.h"
 #include "shaders.h"
 #include "textures.h"
@@ -22,7 +23,6 @@
 #include "windowparameters.h"
 #include "wave.h"
 #include "projectile.h"
-
 class GameControl {
     private:
         bool usePerspectiveProjection;
@@ -40,16 +40,15 @@ class GameControl {
         ObjectModel* shipModel;
         ObjectModel* playerModel;
         ObjectModel* bulletModel;
-        ObjectInstance* player;
-        Scenery* scenery;
+        ObjectInstance* playerObject;
         std::vector<Wave> waves;
         unsigned int currentWave;
         bool gameOver;
-        std::list<Projectile*> projectiles;
+        Scene scene;
     public:
         GameControl();
         ~GameControl();
-        void updateGameState();
+        void updateGameState(GLFWwindow* window);
 };
 
 #endif

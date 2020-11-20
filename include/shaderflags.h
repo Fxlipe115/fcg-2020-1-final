@@ -3,10 +3,11 @@
 
 enum ShaderFlags {
     CARRIER = 1,
-    BUNNY = 2,
+    PLAYER = 2,
     PLANE = 4,
-    PHONG = 8,
-    LAMBERT = 16
+    BULLET = 8,
+    PHONG = 16,
+    GOURAUD = 32
 };
 
 #endif

@@ -11,6 +11,10 @@ void Wave::drawEnemies(GpuProgram* gpuProgram) {
     }
 }
 
+std::list<Actor>& Wave::getEnemies() {
+    return enemies;
+}
+
 void Wave::removeDeadEnemies() {
     enemies.remove_if([](Actor& enemy) {
         return !enemy.isAlive();
