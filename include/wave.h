@@ -3,16 +3,16 @@
 
 #include <list>
 
-#include "actor.h"
+#include "enemy.h"
 #include "gpuprogram.h"
 
 class Wave {
     private:
-        std::list<Actor> enemies;
+        std::list<Enemy*> enemies;
     public:
-        Wave(std::list<Actor>& enemies);
+        Wave(std::list<Enemy*>& enemies);
         void drawEnemies(GpuProgram* gpuProgram);
-        std::list<Actor>& getEnemies();
+        std::list<Enemy*>& getEnemies();
         void removeDeadEnemies();
         int size();
 };

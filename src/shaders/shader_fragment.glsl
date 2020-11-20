@@ -144,7 +144,7 @@ void main()
     vec3 Ia = vec3(0.2,0.2,0.2);
 
     // vetor h intermediario entre l e v
-    /*vec4 h = (l + v)/ length (l + v);*/
+    vec4 h = (l + v)/ length (l + v);
 
     // Termo difuso utilizando a lei dos cossenos de Lambert
     vec3 lambert_diffuse_term = Kd * I * max(0, dot(n, l));
@@ -153,17 +153,17 @@ void main()
     vec3 ambient_term = Ka*Ia;
 
     // Termo especular utilizando o modelo de iluminação de Phong
-    vec3 phong_specular_term = Ks * I * pow(max(0, dot(r, v)), q);
 
-    /*vec3 blinn_phong_specular_term = Ks * I * pow(max(0 , dot(n, h)), q);*/
+    vec3 blinn_phong_specular_term = Ks * I * pow(max(0 , dot(n, h)), q);
 
     // Cor final do fragmento calculada com uma combinação dos termos difuso,
     // especular, e ambiente.
     // color = (dot(normalize(p-spotlight), normalize(spotlight_v)) < cos(0.523599f)) ?
     //ambient_term :lambert_diffuse_term + ambient_term + phong_specular_term;
-    color = Kd0 + Kd1 + lambert_diffuse_term + ambient_term + phong_specular_term;
-
+    color = Kd0 + Kd1 + lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
     color = pow(color, vec3(1.0,1.0,1.0)/2.2);
 }
+//vec3 phong_specular_term = Ks * I * pow(max(0, dot(r, v)), q);
+//color = Kd0 + Kd1 + lambert_diffuse_term + ambient_term + phong_specular_term;

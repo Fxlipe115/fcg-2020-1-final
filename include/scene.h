@@ -12,7 +12,8 @@ struct Scene {
     Scene();
     Actor* player;
     Wave* wave;
-    std::list<Projectile*> projectiles;
+    std::list<Projectile*> playerProjectiles;
+    std::list<Projectile*> enemyProjectiles;
     Scenery* scenery;
 };
 

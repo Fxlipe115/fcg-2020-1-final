@@ -59,13 +59,13 @@ void PlayerControl::updatePlayerPosition() {
     playerObject->setTranslation(glm::vec3(nextPlayerPosition));
 
     bool willCollide = false;
-    for(Actor& enemy : scene->wave->getEnemies()) {
+    for(Enemy*& enemy : scene->wave->getEnemies()) {
         AxisAlignedBoundingBox playerBB(playerObject);
-        AxisAlignedBoundingBox enemyBB(enemy.getObjectInstance());
+        AxisAlignedBoundingBox enemyBB(enemy->getActor()->getObjectInstance());
         Collision collision;
         if(collision.collision(playerBB, enemyBB)) {
             scene->player->receiveDamage(10);
-            enemy.receiveDamage(100);
+            enemy->getActor()->receiveDamage(100);
             willCollide = true;
         }
     }
@@ -77,11 +77,13 @@ void PlayerControl::updatePlayerPosition() {
         }
     }
 
-    for(Projectile*& bullet : scene->projectiles) {
+    for(Projectile*& bullet : scene->enemyProjectiles) {
         AxisAlignedBoundingBox playerBoundingBox(playerObject);
         Sphere bulletBoundingBox(bullet->getObjectInstance());
         Collision collision;
         if(collision.collision(playerBoundingBox, bulletBoundingBox)) {
+            scene->player->receiveDamage(bullet->getDamage());
+            bullet->setOutOfBounds(true);
             willCollide = true;
         }
     }

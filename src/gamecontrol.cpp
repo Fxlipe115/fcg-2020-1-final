@@ -5,6 +5,7 @@
 #include "beziercurve.h"
 #include "collision.h"
 #include "textrendering.h"
+#include "battleship.h"
 
 GameControl::GameControl()
  : usePerspectiveProjection(true), useFreeCamera(false),
@@ -40,14 +41,16 @@ GameControl::GameControl()
 
     scene.scenery = new Scenery(glm::vec3(50.0, 0.0, 50.0), virtualScene);
     
-    std::list<Actor> wave0list;
+    std::list<Enemy*> wave0list;
     for(int i = 0; i < 5; i++) {    
         ObjectInstance* ship = new ObjectInstance(shipModel);
         ship->setTranslation({-1.0f+i*4, -0.05f, (i%2)*2.0f});
         ship->setScale({1.0, 1.0, 1.0});
         ship->setRotation({-1.57, 0.0, 0.0});
 
-        wave0list.push_back(Actor(ship, 2000));
+        Enemy* enemy = new Battleship(new Actor(ship, 2000), bulletModel);
+
+        wave0list.push_back(enemy);
     }
 
     waves.push_back(Wave(wave0list));
@@ -57,10 +60,10 @@ GameControl::GameControl()
 
     ObjectInstance* arcbullet = new ObjectInstance(bulletModel);
     BezierCurve* trajectory = new BezierCurve({0.0, 0.0, 0.0}, {10.0, 5.0, 0.0}, {20.0, 5.0, 0.0}, {30.0, 0.0, 0.0});
-    scene.projectiles.push_back(new BezierProjectile(arcbullet, trajectory, 10));
+    scene.enemyProjectiles.push_back(new BezierProjectile(arcbullet, trajectory, 10));
 
     ObjectInstance* linearbullet = new ObjectInstance(bulletModel);
-    scene.projectiles.push_back(new LinearProjectile(linearbullet, 10, {0.0, 1.0, 0.0}, {0.0, 0.0, -1.0}));
+    scene.enemyProjectiles.push_back(new LinearProjectile(linearbullet, 10, {0.0, 1.0, 0.0}, {0.0, 0.0, -1.0}));
 
 }
 
@@ -123,7 +126,7 @@ void GameControl::updateGameState(GLFWwindow* window) {
         projection = new OrthographicProjection(camera, windowParameters);
     }
 
-    for(Projectile* projectile : scene.projectiles) {
+    for(Projectile* projectile : scene.enemyProjectiles) {
         projectile->move(0.1);
         projectile->getObjectInstance()->draw(gpuProgram,ShaderFlags::BULLET);
         Sphere boundingSphere(projectile->getObjectInstance());
@@ -134,7 +137,22 @@ void GameControl::updateGameState(GLFWwindow* window) {
             }
         }
     }
-    scene.projectiles.remove_if([](Projectile*& projectile) {
+    for(Projectile* projectile : scene.playerProjectiles) {
+        projectile->move(0.1);
+        projectile->getObjectInstance()->draw(gpuProgram,ShaderFlags::BULLET);
+        Sphere boundingSphere(projectile->getObjectInstance());
+        for(Plane& wall : scene.scenery->getWalls()) {
+            Collision collision;
+            if(collision.collision(boundingSphere, wall)) {
+                projectile->setOutOfBounds(true);
+            }
+        }
+    }
+
+    scene.enemyProjectiles.remove_if([](Projectile*& projectile) {
+        return projectile->isOutOfBounds();
+    });
+    scene.playerProjectiles.remove_if([](Projectile*& projectile) {
         return projectile->isOutOfBounds();
     });
 

@@ -54,12 +54,12 @@ glm::vec3 AxisAlignedBoundingBox::closestPointOnBox(glm::vec3 point) {
     glm::vec3 max = getMax();
 
     result.x = (result.x<min.x) ? min.x : result.x;
-    result.y = (result.y<min.x) ? min.y : result.y;
-    result.z = (result.z<min.x) ? min.z : result.z;
+    result.y = (result.y<min.y) ? min.y : result.y;
+    result.z = (result.z<min.z) ? min.z : result.z;
 
     result.x = (result.x>max.x) ? max.x : result.x;
-    result.y = (result.y>max.x) ? max.y : result.y;
-    result.z = (result.z>max.x) ? max.z : result.z;
+    result.y = (result.y>max.y) ? max.y : result.y;
+    result.z = (result.z>max.z) ? max.z : result.z;
     
     return result;
 }
