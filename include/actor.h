@@ -12,8 +12,6 @@ class Actor {
     public:
         Actor(ObjectInstance* actor, int healthpoints);
         ObjectInstance* getObjectInstance();
-        void/*Attack*/ attack();
-        void/*Attack*/ attack(glm::vec3 targetPosition);
         int getHealthPoints();
         void receiveDamage(int damage);
         bool isAlive();

@@ -6,7 +6,7 @@
 class Battleship : public Enemy {
     public:
         Battleship(Actor* enemy, ObjectModel* projectileModel);
-        std::list<Projectile*> attack(Actor* other) override;
+        void attack(Actor* other, std::list<Projectile*>& bullets) override;
 };
 
 #endif

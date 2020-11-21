@@ -12,7 +12,7 @@ class Enemy {
         ObjectModel* projectileModel;
     public:
         Enemy(Actor* enemy, ObjectModel* projectileModel);
-        virtual std::list<Projectile*> attack(Actor* other) = 0;
+        virtual void attack(Actor* other, std::list<Projectile*>& bullets) = 0;
         void testCollision(std::list<Projectile*>& projectiles);
         Actor* getActor();
 };

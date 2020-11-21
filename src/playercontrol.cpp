@@ -17,7 +17,7 @@ void PlayerControl::updatePlayerPosition() {
     double time = glfwGetTime();
     float timeSinceLastUpdate = (time - lastUpdateTime);
 
-    ObjectInstance* playerObject = scene->player->getObjectInstance();
+    ObjectInstance* playerObject = scene->player->getActor()->getObjectInstance();
 
     glm::vec4 playerPosition = glm::vec4(playerObject->getTranslation(),1.0f);
     glm::vec4 playerOrientationVector = playerObject->getFrontVector();
@@ -64,7 +64,7 @@ void PlayerControl::updatePlayerPosition() {
         AxisAlignedBoundingBox enemyBB(enemy->getActor()->getObjectInstance());
         Collision collision;
         if(collision.collision(playerBB, enemyBB)) {
-            scene->player->receiveDamage(10);
+            scene->player->getActor()->receiveDamage(10);
             enemy->getActor()->receiveDamage(100);
             willCollide = true;
         }
@@ -82,7 +82,7 @@ void PlayerControl::updatePlayerPosition() {
         Sphere bulletBoundingBox(bullet->getObjectInstance());
         Collision collision;
         if(collision.collision(playerBoundingBox, bulletBoundingBox)) {
-            scene->player->receiveDamage(bullet->getDamage());
+            scene->player->getActor()->receiveDamage(bullet->getDamage());
             bullet->setOutOfBounds(true);
             willCollide = true;
         }
@@ -96,7 +96,7 @@ void PlayerControl::updatePlayerPosition() {
 }
 
 void PlayerControl::updatePlayerOrientation() {
-    scene->player->getObjectInstance()->setRotation({0.0, mouse->rotationAngleTheta+M_PI,0.0});
+    scene->player->getActor()->getObjectInstance()->setRotation({0.0, mouse->rotationAngleTheta+M_PI,0.0});
 }
 
 void PlayerControl::updatePlayer() {
@@ -107,7 +107,7 @@ void PlayerControl::updatePlayer() {
 glm::vec4 PlayerControl::calculateCollisionNormalVector() {
     glm::vec3 collisionNormalVector = {0.0, 0.0, 0.0};
     for(Plane& wall : scene->scenery->getWalls()) {
-        Sphere playerBoundingBox(scene->player->getObjectInstance());
+        Sphere playerBoundingBox(scene->player->getActor()->getObjectInstance());
         Collision collision;
         if(collision.collision(playerBoundingBox, wall)) {
             collisionNormalVector = collisionNormalVector + collision.getDirectionOfCollision();

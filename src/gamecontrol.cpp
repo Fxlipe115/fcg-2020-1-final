@@ -37,10 +37,14 @@ GameControl::GameControl()
     playerObject = new ObjectInstance(playerModel);
     playerObject->setScale({0.01f, 0.01f, 0.01f});
     playerObject->setTranslation({0.0, 0.6, 10.0});
-    scene.player = new Actor(playerObject, 2000);
 
     scene.scenery = new Scenery(glm::vec3(50.0, 0.0, 50.0), virtualScene);
     
+    bulletModel = new ObjectModel("./data/sphere.obj");
+    bulletModel->buildTrianglesAndAddToVirtualScene(virtualScene);
+
+    scene.player = new Player(new Actor(playerObject, 2000), bulletModel);
+
     std::list<Enemy*> wave0list;
     for(int i = 0; i < 5; i++) {    
         ObjectInstance* ship = new ObjectInstance(shipModel);
@@ -55,8 +59,6 @@ GameControl::GameControl()
 
     waves.push_back(Wave(wave0list));
 
-    bulletModel = new ObjectModel("./data/sphere.obj");
-    bulletModel->buildTrianglesAndAddToVirtualScene(virtualScene);
 
     ObjectInstance* arcbullet = new ObjectInstance(bulletModel);
     BezierCurve* trajectory = new BezierCurve({0.0, 0.0, 0.0}, {10.0, 5.0, 0.0}, {20.0, 5.0, 0.0}, {30.0, 0.0, 0.0});
@@ -96,7 +98,7 @@ void GameControl::updateGameState(GLFWwindow* window) {
         gameOver = true;
     }
 
-    if(!scene.player->isAlive()) {
+    if(!scene.player->getActor()->isAlive()) {
         gameOver = true;
     }
 
@@ -107,7 +109,7 @@ void GameControl::updateGameState(GLFWwindow* window) {
         float lineheight = TextRendering_LineHeight(window);
         float charwidth = TextRendering_CharWidth(window);
         char buffer[20];
-        int numchars = snprintf(buffer, 20, "Health %d", scene.player->getHealthPoints());
+        int numchars = snprintf(buffer, 20, "Health %d", scene.player->getActor()->getHealthPoints());
         TextRendering_PrintString(window, buffer, 1.0f-(numchars + 30)*charwidth, 1.0f-lineheight, 1.0f);
     } else {
         float lineheight = TextRendering_LineHeight(window);
@@ -127,7 +129,7 @@ void GameControl::updateGameState(GLFWwindow* window) {
     }
 
     for(Projectile* projectile : scene.enemyProjectiles) {
-        projectile->move(0.1);
+        projectile->move(0.6);
         projectile->getObjectInstance()->draw(gpuProgram,ShaderFlags::BULLET);
         Sphere boundingSphere(projectile->getObjectInstance());
         for(Plane& wall : scene.scenery->getWalls()) {
@@ -138,7 +140,7 @@ void GameControl::updateGameState(GLFWwindow* window) {
         }
     }
     for(Projectile* projectile : scene.playerProjectiles) {
-        projectile->move(0.1);
+        projectile->move(1.0);
         projectile->getObjectInstance()->draw(gpuProgram,ShaderFlags::BULLET);
         Sphere boundingSphere(projectile->getObjectInstance());
         for(Plane& wall : scene.scenery->getWalls()) {
@@ -174,6 +176,10 @@ void GameControl::updateGameState(GLFWwindow* window) {
             usePerspectiveProjection = !usePerspectiveProjection;
             break;
 
+        case SwitchKeys::SPACE_SWITCH_KEY:
+            scene.player->attack(scene.playerProjectiles);
+            break;
+
         default:
             break;
         }
@@ -183,7 +189,7 @@ void GameControl::updateGameState(GLFWwindow* window) {
     gpuProgram->sendViewMatrixToGPU(camera->getViewMatrix());
     gpuProgram->sendProjectionMatrixToGPU(projection->generateMatrix());
 
-    if(scene.player->isAlive()) {
+    if(scene.player->getActor()->isAlive()) {
         playerObject->draw(gpuProgram, ShaderFlags::PLAYER);
     }
 

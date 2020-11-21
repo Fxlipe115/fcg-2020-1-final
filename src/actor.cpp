@@ -1,5 +1,6 @@
 #include "actor.h"
 
+#include "linearprojectile.h"
 
 Actor::Actor(ObjectInstance* actor, int healthpoints)
  : actor(actor), healthPoints(healthpoints)
@@ -8,14 +9,6 @@ Actor::Actor(ObjectInstance* actor, int healthpoints)
 
 ObjectInstance* Actor::getObjectInstance() {
     return actor;
-}
-
-void Actor::attack() {
-
-}
-
-void Actor::attack(glm::vec3 targetPosition) {
-    
 }
 
 int Actor::getHealthPoints() {
