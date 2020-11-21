@@ -45,6 +45,7 @@ class GameControl {
         unsigned int currentWave;
         bool gameOver;
         Scene scene;
+        double lastAttackTime;
     public:
         GameControl();
         ~GameControl();

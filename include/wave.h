@@ -14,6 +14,7 @@ class Wave {
         void drawEnemies(GpuProgram* gpuProgram);
         std::list<Enemy*>& getEnemies();
         void removeDeadEnemies();
+        void checkCollisions(std::list<Projectile*> bullets);
         int size();
 };
 

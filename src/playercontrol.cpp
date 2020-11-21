@@ -64,8 +64,8 @@ void PlayerControl::updatePlayerPosition() {
         AxisAlignedBoundingBox enemyBB(enemy->getActor()->getObjectInstance());
         Collision collision;
         if(collision.collision(playerBB, enemyBB)) {
-            scene->player->getActor()->receiveDamage(10);
-            enemy->getActor()->receiveDamage(100);
+            scene->player->getActor()->receiveDamage(1);
+            enemy->getActor()->receiveDamage(1);
             willCollide = true;
         }
     }

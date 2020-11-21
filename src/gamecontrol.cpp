@@ -1,5 +1,7 @@
 #include "gamecontrol.h"
 
+#include <cstdlib>
+
 #include "bezierprojectile.h"
 #include "linearprojectile.h"
 #include "beziercurve.h"
@@ -10,8 +12,10 @@
 GameControl::GameControl()
  : usePerspectiveProjection(true), useFreeCamera(false),
    showInfoText(true), camera(nullptr), projection(nullptr), 
-   currentWave(0), gameOver(false)
+   currentWave(0), gameOver(false), lastAttackTime(glfwGetTime())
 {
+    srand(time(NULL));
+
     shaders = new Shaders("./src/shaders/shader_fragment.glsl", "./src/shaders/shader_vertex.glsl");
     gpuProgram = new GpuProgram(shaders);
     virtualScene = new VirtualScene();
@@ -29,30 +33,28 @@ GameControl::GameControl()
     callbacks->setMouseParameters(mouseParameters);
     callbacks->setKeyboardParameters(keyboardParameters);
 
-    shipModel = new ObjectModel("./data/kuznetsov.obj");
-    shipModel->buildTrianglesAndAddToVirtualScene(virtualScene);
+    scene.scenery = new Scenery(glm::vec3(100.0, 0.0, 100.0), virtualScene);
+    
+    bulletModel = new ObjectModel("./data/sphere.obj");
+    bulletModel->buildTrianglesAndAddToVirtualScene(virtualScene);
 
     playerModel = new ObjectModel("./data/Shrek.obj");
     playerModel->buildTrianglesAndAddToVirtualScene(virtualScene);
     playerObject = new ObjectInstance(playerModel);
     playerObject->setScale({0.01f, 0.01f, 0.01f});
-    playerObject->setTranslation({0.0, 0.6, 10.0});
-
-    scene.scenery = new Scenery(glm::vec3(50.0, 0.0, 50.0), virtualScene);
-    
-    bulletModel = new ObjectModel("./data/sphere.obj");
-    bulletModel->buildTrianglesAndAddToVirtualScene(virtualScene);
-
+    playerObject->setTranslation({0.0, 0.6, 50.0});
     scene.player = new Player(new Actor(playerObject, 2000), bulletModel);
 
+    shipModel = new ObjectModel("./data/kuznetsov.obj");
+    shipModel->buildTrianglesAndAddToVirtualScene(virtualScene);
     std::list<Enemy*> wave0list;
     for(int i = 0; i < 5; i++) {    
         ObjectInstance* ship = new ObjectInstance(shipModel);
-        ship->setTranslation({-1.0f+i*4, -0.05f, (i%2)*2.0f});
-        ship->setScale({1.0, 1.0, 1.0});
+        ship->setTranslation({-40.0f+i*20, -0.05f, (i%2)*-50.0f});
+        ship->setScale({4.0, 4.0, 4.0});
         ship->setRotation({-1.57, 0.0, 0.0});
 
-        Enemy* enemy = new Battleship(new Actor(ship, 2000), bulletModel);
+        Enemy* enemy = new Battleship(new Actor(ship, 10000), bulletModel);
 
         wave0list.push_back(enemy);
     }
@@ -128,13 +130,24 @@ void GameControl::updateGameState(GLFWwindow* window) {
         projection = new OrthographicProjection(camera, windowParameters);
     }
 
+    double now = glfwGetTime();
+    if(now - lastAttackTime > 0.01) {
+        lastAttackTime = now;
+        for(Enemy*& enemy : scene.wave->getEnemies()) {
+            if((rand()%100) < 1){
+                enemy->attack(scene.player->getActor(), scene.enemyProjectiles);
+            }
+        }
+    }
+
+    scene.wave->checkCollisions(scene.playerProjectiles);
+
     for(Projectile* projectile : scene.enemyProjectiles) {
         projectile->move(0.6);
         projectile->getObjectInstance()->draw(gpuProgram,ShaderFlags::BULLET);
         Sphere boundingSphere(projectile->getObjectInstance());
         for(Plane& wall : scene.scenery->getWalls()) {
-            Collision collision;
-            if(collision.collision(boundingSphere, wall)) {
+            if(wall.distanceToPlane(boundingSphere.getCenter()) > 0) {
                 projectile->setOutOfBounds(true);
             }
         }
@@ -144,8 +157,7 @@ void GameControl::updateGameState(GLFWwindow* window) {
         projectile->getObjectInstance()->draw(gpuProgram,ShaderFlags::BULLET);
         Sphere boundingSphere(projectile->getObjectInstance());
         for(Plane& wall : scene.scenery->getWalls()) {
-            Collision collision;
-            if(collision.collision(boundingSphere, wall)) {
+            if(wall.distanceToPlane(boundingSphere.getCenter()) > 0) {
                 projectile->setOutOfBounds(true);
             }
         }
